@@ -1,0 +1,182 @@
+/* font-IranSans */
+
+@font-face {
+    font-family: "IranianSans";
+    src: url("../res/fonts/irsans.ttf"), url("../res/fonts/irsansb.ttf");
+}
+
+
+/* font-BTabassom */
+
+@font-face {
+    font-family: "BTabassom";
+    src: url("../res/fonts/btabassom.ttf");
+}
+
+
+/* font-RawajHeavy */
+
+@font-face {
+    font-family: "RawajHeavy";
+    src: url("../res/fonts/Rawaj\ Heavy.otf");
+}
+
+
+
+/* font-RawajOutlined */
+
+@font-face {
+    font-family: "RawajOutlined";
+    src: url("../res/fonts/Rawaj\ Outlined.otf");
+}
+
+
+/* font-Lalezar */
+
+@font-face {
+    font-family: "Lalezar";
+    src: url("../res/fonts/lalezarregular.ttf");
+}
+
+
+/* font-BTitr Bold */
+
+@font-face {
+    font-family: "BTitrBold";
+    src: url("../res/fonts/btitrbld.ttf");
+}
+
+
+/* font-Vazir */
+
+@font-face {
+    font-family: Vazir;
+    src: url("../res/fonts/vazir_collection/Vazir.eot");
+    src: url("../res/fonts/vazir_collection/Vazir.woff2") format("woff2"), url("../res/fonts/vazir_collection/Vazir.woff") format("woff"), url("../res/fonts/vazir_collection/Vazir.ttf") format("truetype");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Vazir";
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Bold.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Bold.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Bold.woff2") format("woff2"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Bold.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Bold.ttf") format("truetype");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Light.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Light.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Light.woff2") format("woff2"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Light.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Light.ttf") format("truetype");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Medium.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Medium.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Medium.woff2") format("woff2"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Medium.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Medium.ttf") format("truetype");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Thin.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Thin.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Thin.woff2") format("woff2"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Thin.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Thin.ttf") format("truetype");
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Black.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Black.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Black.woff2") format("woff2"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Black.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir-Black.ttf") format("truetype");
+    font-weight: 900;
+}
+
+
+/* font-Yekan */
+
+@font-face {
+    font-family: "Yekan";
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan.ttf") format("truetype");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Yekan";
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan-Bold.eot");
+    src: url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan-Bold.eot?#iefix") format("embedded-opentype"), url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan-Bold.woff") format("woff"), url("https://cdn.fontcdn.ir/Font/Persian/Yekan/Yekan-Bold.ttf") format("truetype");
+    font-weight: bold;
+}
+
+
+/* font-Tajawal */
+
+@font-face {
+    font-family: "Tajawal";
+    src: url("../res/fonts/tajawal/Tajawal-Regular.ttf");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Tajawal";
+    src: url("../res/fonts/tajawal/Tajawal-Bold.ttf");
+    font-weight: bold;
+}
+
+.font-titr-bold {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "BTitrBold";
+}
+
+.font-vazir {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "Vazir", "IranianSansRegular";
+}
+
+.font-tabassom {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "BTabassom", "IranianSansRegular";
+}
+
+.font-lalezar {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "Lalezar", "Vazir";
+}
+
+.font-vazir-small {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "Vazir", "IranianSansRegular";
+    font-size: small;
+}
+
+.font-iransans {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "IranianSans";
+}
+
+.font-bardiya {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "Bardiya";
+}
+
+.font-alerts {
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align: right;
+    font-family: "Vazir", "IranianSansRegular";
+    font-size: small;
+}
