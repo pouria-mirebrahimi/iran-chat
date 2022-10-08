@@ -34,7 +34,8 @@ const LoginView = (props) => {
   const [hasErrorUsername, setHasErrorUsername] = useState(false)
   const [loginButtonDisabled, setLoginButtonDisabled] = useState(false)
   const [bounce, setBounce] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('نام کاربری خود را وارد کنید')
+  const [errorMessageUser, setErrorMessageUser] = useState('نام کاربری خود را وارد کنید')
+  const [errorMessagePass, setErrorMessagePass] = useState('رمز عبور خود را وارد کنید')
   const [usernameRule, setUsernameRule] = useState(false)
   const [passwordRule, setPasswordRule] = useState(false)
 
@@ -59,8 +60,27 @@ const LoginView = (props) => {
       return
     }
 
-    let username_has_error = username.length === 0
-    let password_has_error = password.length === 0
+    let username_has_error = false,
+      password_has_error = false
+
+    const _username = PN.convertPeToEn(username)
+    const _password = PN.convertPeToEn(password)
+
+    if (_username.length === 0) {
+      username_has_error = true
+      setErrorMessageUser('نام کاربری خود را وارد کنید')
+    } else if (!/^[A-Za-z][A-Za-z0-9_]{10,80}$/.test(_username)) {
+      username_has_error = true
+      setErrorMessageUser('نام کاربری شما مطابق الگوی مجاز نیست')
+    }
+
+    if (_password.length === 0) {
+      password_has_error = true
+      setErrorMessagePass('رمز عبور خود را وارد کنید')
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#^()%*?&])[A-Za-z\d@$!%*?&]/.test(_password)) {
+      password_has_error = true
+      setErrorMessagePass('رمز عبور شما مطابق الگوی مجاز نیست')
+    }
 
     if (username_has_error && password_has_error) {
       setHasErrorUsername(true)
@@ -83,8 +103,6 @@ const LoginView = (props) => {
       }, 300);
     } else {
       setLoginButtonDisabled(true)
-      const _username = PN.convertPeToEn(username)
-      const _password = PN.convertPeToEn(password)
 
       let data = {
         username: username,
@@ -111,19 +129,12 @@ const LoginView = (props) => {
       setUsername(PN.convertPeToEn(e.target.value))
       setHasErrorUsername(false)
       setShowEraser(e.target.value.length > 0 ? true : false)
-
-      const _username = PN.convertPeToEn(e.target.value)
-      console.log(`username valid? ${/^[A-Za-z][A-Za-z0-9_]{10,80}$/.test(_username)}`)
-
     } else if (e.target.name === 'password') {
       if (hasPersian(e.target.value)) {
         setHasErrorPass(true)
       }
       setHasErrorPass(false)
       setPassword(e.target.value)
-
-      const _password = PN.convertPeToEn(e.target.value)
-      console.log(`password valid? ${/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#^()%*?&])[A-Za-z\d@$!%*?&]/.test(_password)}`)
     }
   }
 
@@ -145,7 +156,7 @@ const LoginView = (props) => {
               <FaRegTimesCircle onClick={onErase} />
             </IconContext.Provider>}
           </div>
-          {hasErrorUsername && <div id='error'>{errorMessage}</div>}
+          {hasErrorUsername && <div id='error'>{errorMessageUser}</div>}
           <div className={`username_rules ${!usernameRule && "d-none"}`}>
             <h5>قوانین نام کاربری:</h5>
             <ul>
@@ -170,7 +181,7 @@ const LoginView = (props) => {
               <FaEyeSlash onClick={onShowPass} />
             </IconContext.Provider>}
           </div>
-          {hasErrorPass && <div id='error'>رمز عبور را به صورت صحیح وارد کنید</div>}
+          {hasErrorPass && <div id='error'>{errorMessagePass}</div>}
           <div className={`password_rules ${!passwordRule && "d-none"}`}>
             <h5>قوانین رمز عبور:</h5>
             <ul>

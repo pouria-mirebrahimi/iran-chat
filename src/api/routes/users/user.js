@@ -39,6 +39,7 @@ router.post("/sign/in", async (req, res) => {
     )
 
     let payload = {}
+    let state = 200
 
     if (!user) {
       const uniqueID = uuid.v1()
@@ -58,6 +59,8 @@ router.post("/sign/in", async (req, res) => {
 
       await user.save()
 
+      state = 201
+
     } else {
       const token = await user.generateAuthToken()
 
@@ -69,7 +72,7 @@ router.post("/sign/in", async (req, res) => {
       }
     }
 
-    res.status(201).json(
+    res.status(state).json(
       payload
     )
   } catch (err) {
