@@ -35,6 +35,8 @@ const LoginView = (props) => {
   const [loginButtonDisabled, setLoginButtonDisabled] = useState(false)
   const [bounce, setBounce] = useState(false)
   const [errorMessage, setErrorMessage] = useState('نام کاربری خود را وارد کنید')
+  const [usernameRule, setUsernameRule] = useState(false)
+  const [passwordRule, setPasswordRule] = useState(false)
 
   const checkEnterButton = (e) => {
     if (e.key == 'Enter') {
@@ -83,6 +85,19 @@ const LoginView = (props) => {
       setLoginButtonDisabled(true)
       const _username = PN.convertPeToEn(username)
       const _password = PN.convertPeToEn(password)
+
+      let data = {
+        username: username,
+        password: password,
+      }
+
+      axios.post(
+        '/api/users/user/sign/in', data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(response => { console.log(response.data) })
+        .catch((error) => { console.log(error.response.data) })
     }
   }
 
@@ -96,12 +111,19 @@ const LoginView = (props) => {
       setUsername(PN.convertPeToEn(e.target.value))
       setHasErrorUsername(false)
       setShowEraser(e.target.value.length > 0 ? true : false)
+
+      const _username = PN.convertPeToEn(e.target.value)
+      console.log(`username valid? ${/^[A-Za-z][A-Za-z0-9_]{10,80}$/.test(_username)}`)
+
     } else if (e.target.name === 'password') {
       if (hasPersian(e.target.value)) {
         setHasErrorPass(true)
       }
       setHasErrorPass(false)
       setPassword(e.target.value)
+
+      const _password = PN.convertPeToEn(e.target.value)
+      console.log(`password valid? ${/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#^()%*?&])[A-Za-z\d@$!%*?&]/.test(_password)}`)
     }
   }
 
@@ -116,16 +138,32 @@ const LoginView = (props) => {
 
           <div className='mt-30' id='label'>نام کاربری (به انگلیسی)</div>
           <div className='username'>
-            <input type="text" name='username' placeholder='' autoComplete='off' className={`text-left ${hasErrorUsername && 'input-error'}`} onChange={onChange} value={username} />
+            <input type="text" name='username' placeholder='' autoComplete='off' className={`text-left ${hasErrorUsername && 'input-error'}`}
+              onChange={onChange} value={username} onFocus={() => { setUsernameRule(true) }}
+              onBlur={() => { setUsernameRule(false) }} />
             {showEraser && <IconContext.Provider value={{ size: 18, className: "btn-eraser" }}>
               <FaRegTimesCircle onClick={onErase} />
             </IconContext.Provider>}
           </div>
           {hasErrorUsername && <div id='error'>{errorMessage}</div>}
+          <div className={`username_rules ${!usernameRule && "d-none"}`}>
+            <h5>قوانین نام کاربری:</h5>
+            <ul>
+              <li>حروف باید انگلیسی باشند</li>
+              <li>حروف کوچک مجاز است</li>
+              <li>حروف بزرگ مجاز است</li>
+              <li>علامت underline مجاز است</li>
+              <li>شروع با عدد مجاز نیست</li>
+              <li>تعداد کاراکتر بین ۱۰ تا ۸۰ باشد</li>
+            </ul>
+          </div>
 
           <div id='label'>رمز عبور</div>
           <div className='password'>
-            <input id='login-password-id' type={showEye ? 'text' : 'password'} name='password' className={`text-left ${hasErrorPass && 'input-error'}`} placeholder='' onChange={onChange} onKeyDown={checkEnterButton} />
+            <input id='login-password-id' type={showEye ? 'text' : 'password'} name='password'
+              className={`text-left ${hasErrorPass && 'input-error'}`} placeholder='' onChange={onChange}
+              onKeyDown={checkEnterButton} onFocus={() => { setPasswordRule(true) }}
+              onBlur={() => { setPasswordRule(false) }} />
             {showEye ? <IconContext.Provider value={{ size: 18, className: "btn-eye" }}>
               <FaEye onClick={onShowPass} />
             </IconContext.Provider> : <IconContext.Provider value={{ size: 18, className: "btn-eye" }}>
@@ -133,6 +171,17 @@ const LoginView = (props) => {
             </IconContext.Provider>}
           </div>
           {hasErrorPass && <div id='error'>رمز عبور را به صورت صحیح وارد کنید</div>}
+          <div className={`password_rules ${!passwordRule && "d-none"}`}>
+            <h5>قوانین رمز عبور:</h5>
+            <ul>
+              <li>حروف باید انگلیسی باشند</li>
+              <li>شامل حداقل یک حرف کوچک باشد</li>
+              <li>شامل حداقل یک حرف بزرگ باشد</li>
+              <li>شامل حداقل یک عدد باشد</li>
+              <li>شامل حداقل یکی از حروف !@#$%^&*()? باشد</li>
+              <li>تعداد کاراکتر بیشتر از ۸ باشد</li>
+            </ul>
+          </div>
 
           <button type="submit" name='submit' className={`mt-40 ${bounce && "btn-bounce"} ${loginButtonDisabled && 'btn-disabled'}`} placeholder='' onClick={onLogin}>
             {loginButtonDisabled ? <ScaleLoader color={'#DD5353'} loading={true} height={24} width={2} radius={3} margin={2} /> : 'ورود / ثبت‌نام'}

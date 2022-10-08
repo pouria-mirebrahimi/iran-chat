@@ -187,6 +187,47 @@ button:hover {
   border: none !important;
 }
 
+.username_rules {
+  position: absolute;
+  background-color: var(--primary-color-5);
+  color: var(--primary-color-1);
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 0.75em;
+  top: 53%;
+  z-index: 99;
+}
+
+.password_rules {
+  position: absolute;
+  background-color: var(--primary-color-5);
+  color: var(--primary-color-1);
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 0.75em;
+  top: 26%;
+  z-index: 99;
+}
+
+.username_rules h5,
+.password_rules h5 {
+  margin: 5px 0;
+}
+
+.username_rules ul,
+.password_rules ul {
+  list-style: none;
+}
+
+.username_rules ul li::before,
+.password_rules ul li::before {
+  content: ' - ';
+}
+
+.d-none {
+  display: none;
+}
+
 
 /* media queries */
 @media screen and (max-width: 601px) {

@@ -1,6 +1,6 @@
 const config = require("config");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const User = require("../models/users/user");
 
 const loggedin = async (req, res, next) => {
   const token = req.header("Authorization").replace("Bearer ", "");

@@ -10,7 +10,7 @@
   },
   "JsonWebToken": {
     "jwt-secret": "9ff6d227-21d5-4414-c8906eae-4591-11ed-a8bb-b31625f31fd0-9b69-59d8591c253f",
-    "expiration": "1d"
+    "expiration": "1h"
   },
   "Logging": {
     "level": "silly",

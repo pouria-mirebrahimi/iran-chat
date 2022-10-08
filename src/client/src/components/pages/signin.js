@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react'
-import LoginView from '../../layouts/signin/login'
+import LoginView from '../layouts/signin/login'
 
 const SignIn = (props) => {
   return (
