@@ -54,6 +54,7 @@ const LoginView = (props) => {
   const [postCode, setPostCode] = useState('')
   const [county, setCounty] = useState('')
   const [state, setState] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     getLocationData()
@@ -63,6 +64,8 @@ const LoginView = (props) => {
 
     if (auth_token !== '') {
       checkActiveUser(auth_token)
+    } else {
+      setLoading(false)
     }
 
     return () => { }
@@ -110,11 +113,26 @@ const LoginView = (props) => {
       }
     )
       .then(response => {
-        console.log(response.data)
+        if (response.status === 200) {
+          if (!response.data.verified) {
+            save_login_info('new user', auth_token)
+            setTimeout(() => {
+              history.replace('/your/name')
+            }, 2000)
+          } else {
+            save_login_info('login', auth_token)
+            setTimeout(() => {
+              history.replace('/your/messages')
+            }, 2000)
+          }
+        } else {
+          setLoading(false)
+        }
       })
       .catch(error => {
-        // Cookies.remove('auth_token', { path: '' })
-        console.log(error.response.data)
+        setLoading(false)
+        Cookies.remove('auth_token', { path: '' })
+        Cookies.remove('unique_id', { path: '' })
       })
   }
 
@@ -280,71 +298,78 @@ const LoginView = (props) => {
     }
   }
 
-  return (
-    <div className='window'>
-      <div className="layout">
+  if (loading)
+    return (
+      <div className="main-loading">
+        <ScaleLoader color={'#DD5353'} loading={true} height={48} width={5} radius={4} margin={3} />
+        <h4>لطفاً کمی صبر کنید...</h4>
+      </div>
+    )
+  else
+    return (
+      <div className='window'>
+        <div className="layout">
+          <div className='login-panel'>
+            <h1>ورود به پیام‌ها</h1>
+            <h3>برای ورود باید از نام کاربری خود استفاده کنید.</h3>
+            <h3>اگر حساب کاربری ندارید، برای شما ساخته خواهد شد.</h3>
 
-        <div className='login-panel'>
-          <h1>ورود به پیام‌ها</h1>
-          <h3>برای ورود باید از نام کاربری خود استفاده کنید.</h3>
-          <h3>اگر حساب کاربری ندارید، برای شما ساخته خواهد شد.</h3>
+            <div className='mt-30' id='label'>نام کاربری (به انگلیسی)</div>
+            <div className='username'>
+              <input type="text" readOnly={loginButtonDisabled} name='username' placeholder='' autoComplete='off' className={`text-left ${hasErrorUsername && 'input-error'}`}
+                onChange={onChange} value={username} onFocus={() => { setUsernameRule(true) }}
+                onBlur={() => { setUsernameRule(false) }} />
+              {showEraser && <IconContext.Provider value={{ size: 18, className: "btn-eraser" }}>
+                <FaRegTimesCircle onClick={onErase} />
+              </IconContext.Provider>}
+            </div>
+            {hasErrorUsername && <div id='error'>{errorMessageUser}</div>}
+            <div className={`username_rules ${!usernameRule && "d-none"}`}>
+              <h5>قوانین نام کاربری:</h5>
+              <ul>
+                <li>حروف باید انگلیسی باشند</li>
+                <li>حروف کوچک مجاز است</li>
+                <li>حروف بزرگ مجاز است</li>
+                <li>علامت underline مجاز است</li>
+                <li>شروع با عدد مجاز نیست</li>
+                <li>تعداد کاراکتر بین ۱۰ تا ۸۰ باشد</li>
+              </ul>
+            </div>
 
-          <div className='mt-30' id='label'>نام کاربری (به انگلیسی)</div>
-          <div className='username'>
-            <input type="text" readOnly={loginButtonDisabled} name='username' placeholder='' autoComplete='off' className={`text-left ${hasErrorUsername && 'input-error'}`}
-              onChange={onChange} value={username} onFocus={() => { setUsernameRule(true) }}
-              onBlur={() => { setUsernameRule(false) }} />
-            {showEraser && <IconContext.Provider value={{ size: 18, className: "btn-eraser" }}>
-              <FaRegTimesCircle onClick={onErase} />
-            </IconContext.Provider>}
-          </div>
-          {hasErrorUsername && <div id='error'>{errorMessageUser}</div>}
-          <div className={`username_rules ${!usernameRule && "d-none"}`}>
-            <h5>قوانین نام کاربری:</h5>
-            <ul>
-              <li>حروف باید انگلیسی باشند</li>
-              <li>حروف کوچک مجاز است</li>
-              <li>حروف بزرگ مجاز است</li>
-              <li>علامت underline مجاز است</li>
-              <li>شروع با عدد مجاز نیست</li>
-              <li>تعداد کاراکتر بین ۱۰ تا ۸۰ باشد</li>
-            </ul>
-          </div>
+            <div id='label'>رمز عبور</div>
+            <div className='password'>
+              <input id='login-password-id' readOnly={loginButtonDisabled} type={showEye ? 'text' : 'password'} name='password'
+                className={`text-left ${hasErrorPass && 'input-error'}`} placeholder='' onChange={onChange}
+                onKeyDown={checkEnterButton} onFocus={() => { setPasswordRule(true) }}
+                onBlur={() => { setPasswordRule(false) }} />
+              {showEye ? <IconContext.Provider value={{ size: 18, className: "btn-eye" }}>
+                <FaEye onClick={onShowPass} />
+              </IconContext.Provider> : <IconContext.Provider value={{ size: 18, className: "btn-eye" }}>
+                <FaEyeSlash onClick={onShowPass} />
+              </IconContext.Provider>}
+            </div>
+            {hasErrorPass && <div id='error'>{errorMessagePass}</div>}
+            <div className={`password_rules ${!passwordRule && "d-none"}`}>
+              <h5>قوانین رمز عبور:</h5>
+              <ul>
+                <li>حروف باید انگلیسی باشند</li>
+                <li>شامل حداقل یک حرف کوچک باشد</li>
+                <li>شامل حداقل یک حرف بزرگ باشد</li>
+                <li>شامل حداقل یک عدد باشد</li>
+                <li>شامل حداقل یکی از حروف !@#$%^&*()? باشد</li>
+                <li>تعداد کاراکتر بیشتر از ۸ باشد</li>
+              </ul>
+            </div>
 
-          <div id='label'>رمز عبور</div>
-          <div className='password'>
-            <input id='login-password-id' readOnly={loginButtonDisabled} type={showEye ? 'text' : 'password'} name='password'
-              className={`text-left ${hasErrorPass && 'input-error'}`} placeholder='' onChange={onChange}
-              onKeyDown={checkEnterButton} onFocus={() => { setPasswordRule(true) }}
-              onBlur={() => { setPasswordRule(false) }} />
-            {showEye ? <IconContext.Provider value={{ size: 18, className: "btn-eye" }}>
-              <FaEye onClick={onShowPass} />
-            </IconContext.Provider> : <IconContext.Provider value={{ size: 18, className: "btn-eye" }}>
-              <FaEyeSlash onClick={onShowPass} />
-            </IconContext.Provider>}
-          </div>
-          {hasErrorPass && <div id='error'>{errorMessagePass}</div>}
-          <div className={`password_rules ${!passwordRule && "d-none"}`}>
-            <h5>قوانین رمز عبور:</h5>
-            <ul>
-              <li>حروف باید انگلیسی باشند</li>
-              <li>شامل حداقل یک حرف کوچک باشد</li>
-              <li>شامل حداقل یک حرف بزرگ باشد</li>
-              <li>شامل حداقل یک عدد باشد</li>
-              <li>شامل حداقل یکی از حروف !@#$%^&*()? باشد</li>
-              <li>تعداد کاراکتر بیشتر از ۸ باشد</li>
-            </ul>
-          </div>
+            <button type="submit" name='submit' className={`mt-40 ${bounce && "btn-bounce"} ${loginButtonDisabled && 'btn-disabled'}`} placeholder='' onClick={onLogin}>
+              {loginButtonDisabled ? <ScaleLoader color={'#DD5353'} loading={true} height={24} width={2} radius={3} margin={2} /> : 'ورود / ثبت‌نام'}
+            </button>
 
-          <button type="submit" name='submit' className={`mt-40 ${bounce && "btn-bounce"} ${loginButtonDisabled && 'btn-disabled'}`} placeholder='' onClick={onLogin}>
-            {loginButtonDisabled ? <ScaleLoader color={'#DD5353'} loading={true} height={24} width={2} radius={3} margin={2} /> : 'ورود / ثبت‌نام'}
-          </button>
+          </div>
 
         </div>
-
       </div>
-    </div>
-  )
+    )
 }
 
 export default LoginView
