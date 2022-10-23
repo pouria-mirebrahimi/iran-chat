@@ -55,6 +55,7 @@ router.post("/sign/in", async (req, res) => {
       payload = {
         auth_token: token,
         unique_id: uniqueID,
+        showingname: true,
       }
 
       await user.save()
@@ -69,6 +70,7 @@ router.post("/sign/in", async (req, res) => {
       payload = {
         auth_token: token,
         unique_id: user['uniqueId'],
+        showingname: 'alias' in user,
       }
     }
 
@@ -94,10 +96,6 @@ router.post('/upload', auth, upload.any(), async (req, res) => {
     service = documents['service']
     message = documents['message']
 
-    console.log(title)
-    console.log(service)
-    console.log(message)
-
     ticket_uid = uuid.v1()
 
     // form part
@@ -110,8 +108,8 @@ router.post('/upload', auth, upload.any(), async (req, res) => {
           throw new Error(err.message)
         }
         logger.info('attachments saved successfully')
-      });
-    });
+      })
+    })
 
     res.status(200).send('Ticket saved successfully')
   } catch (e) {
@@ -119,27 +117,11 @@ router.post('/upload', auth, upload.any(), async (req, res) => {
   }
 })
 
-router.post("/active", auth, async (req, res) => {
+router.get("/active", auth, async (req, res) => {
   try {
     if (!req.user) {
       throw new Error("The user is not signed")
     }
-
-    // logininfo = await LoginInfoModel.findOne(
-    //   {
-    //     owner: req.user
-    //   }
-    // ).sort({ created: -1 }).limit(1)
-
-    // if (logininfo) {
-    //   let login_datetime = logininfo['created'].toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
-    //   login_datetime = login_datetime.replace('،', '')
-    //   login_datetime = login_datetime.replace('\u200f', '').split(' ')
-
-    //   login_datetime = `${login_datetime[1]} ${login_datetime[0]}`
-    // } else {
-    //   login_datetime = ''
-    // }
 
     res.status(200).json(
       {
@@ -150,11 +132,10 @@ router.post("/active", auth, async (req, res) => {
         userId: req.user['uniqueId'],
         level: req.user['level'],
         verified: req.user['account_verified'],
-        // loginDateTime: login_datetime,
+        alias: req.user['alias'] ?? ''
       }
     )
   } catch (err) {
-    console.log(err.message)
     logger.error(err.message)
     res.status(400).json(
       {
@@ -164,43 +145,20 @@ router.post("/active", auth, async (req, res) => {
   }
 })
 
-router.post("/login/info", async (req, res) => {
-  // last login date and time
-  let login_datetime = ''
+router.post("/login/info", auth, async (req, res) => {
 
-  const token = req.header("Authorization").replace("Bearer ", "");
-  if (token == 'Bearer') {
-    infomdl = new LoginInfoModel(
-      {
-        ...req.body,
-      }
-    )
+  infomdl = new LoginInfoModel(
+    {
+      ...req.body,
+      owner: req.user,
+    }
+  )
 
-    login_datetime = infomdl['created'].toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
-    login_datetime = login_datetime.replace('،', '')
-    login_datetime = login_datetime.replace('\u200f', '')
+  login_datetime = infomdl['created'].toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
+  login_datetime = login_datetime.replace('،', '')
+  login_datetime = login_datetime.replace('\u200f', '')
 
-    await infomdl.save()
-  } else {
-    const decoded = jwt.verify(token, config.get("JsonWebToken.jwt-secret"));
-    const user = await UserModel.findOne({
-      _id: decoded._id,
-      "tokens.token": token,
-    })
-
-    infomdl = new LoginInfoModel(
-      {
-        ...req.body,
-        owner: user,
-      }
-    )
-
-    login_datetime = infomdl['created'].toLocaleString('fa-IR', { timeZone: 'Asia/Tehran' })
-    login_datetime = login_datetime.replace('،', '')
-    login_datetime = login_datetime.replace('\u200f', '')
-
-    await infomdl.save()
-  }
+  await infomdl.save()
 
   res.status(200).json({
     datetime: login_datetime,

@@ -140,6 +140,7 @@ button:hover {
 .login-panel h3 {
   font-family: "Vazir";
   font-size: 0.85em;
+  font-weight: normal;
   color: var(--primary-color-1);
 }
 
@@ -226,6 +227,36 @@ button:hover {
 
 .d-none {
   display: none;
+}
+
+.btn-bounce {
+  animation: bounce 0.2s 3 forwards;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateX(0%);
+  }
+
+  20% {
+    transform: translateX(-2%);
+  }
+
+  40% {
+    transform: translateX(0);
+  }
+
+  60% {
+    transform: translateX(2%);
+  }
+
+  80% {
+    transform: translateX(1%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
 }
 
 

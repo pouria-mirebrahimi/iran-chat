@@ -21,10 +21,54 @@ import { IconContext } from 'react-icons/lib'
 
 const LoginView = (props) => {
 
+  const getLocationData = async () => {
+    const res = await axios.get('https://geolocation-db.com/json/')
+    setIP(res.data.IPv4)
+    setCountryCode(res.data.country_code)
+    setCountryName(res.data.country_name)
+    setLatitude(res.data.latitude)
+    setLongitude(res.data.longitude)
+
+    getDetailedData(res.data.latitude, res.data.longitude)
+  }
+
+  const getDetailedData = async (lat, lon) => {
+    const res = await axios.get(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+    )
+
+    setCity(res.data.address.city)
+    setDistrict(res.data.address.district)
+    setPostCode(res.data.address.postcode)
+    setCounty(res.data.address.county)
+    setState(res.data.address.state)
+  }
+
+  const [IP, setIP] = useState('')
+  const [countryCode, setCountryCode] = useState('')
+  const [countryName, setCountryName] = useState('')
+  const [latitude, setLatitude] = useState(0.0)
+  const [longitude, setLongitude] = useState(0.0)
+  const [city, setCity] = useState('')
+  const [district, setDistrict] = useState('')
+  const [postCode, setPostCode] = useState('')
+  const [county, setCounty] = useState('')
+  const [state, setState] = useState('')
+
   useEffect(() => {
-    return () => {
+    getLocationData()
+
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
+
+    if (auth_token !== '') {
+      checkActiveUser(auth_token)
     }
+
+    return () => { }
   }, [])
+
+  const history = useHistory()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -38,6 +82,7 @@ const LoginView = (props) => {
   const [errorMessagePass, setErrorMessagePass] = useState('رمز عبور خود را وارد کنید')
   const [usernameRule, setUsernameRule] = useState(false)
   const [passwordRule, setPasswordRule] = useState(false)
+  const [loginDateTime, setLoginDateTime] = useState('')
 
   const checkEnterButton = (e) => {
     if (e.key == 'Enter') {
@@ -53,6 +98,24 @@ const LoginView = (props) => {
       setHasErrorUsername(false)
       setShowEraser(false)
     }
+  }
+
+  async function checkActiveUser(auth_token) {
+    axios.get('/api/users/user/active',
+      {
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+      .then(response => {
+        console.log(response.data)
+      })
+      .catch(error => {
+        // Cookies.remove('auth_token', { path: '' })
+        console.log(error.response.data)
+      })
   }
 
   async function onLogin(e) {
@@ -114,9 +177,88 @@ const LoginView = (props) => {
         headers: {
           'Content-Type': 'application/json'
         }
-      }).then(response => { console.log(response.data) })
-        .catch((error) => { console.log(error.response.data) })
+      }).then(response => {
+        Cookies.set('auth_token', response.data.auth_token, { expires: 1.0 / 24, path: '' })
+        Cookies.set('unique_id', response.data.unique_id, { expires: 1.0 / 24, path: '' })
+
+
+        if (response.data.showingname) {
+          save_login_info('new user', response.data.auth_token)
+          setTimeout(() => {
+            history.replace('/your/name')
+          }, 1000)
+        } else {
+          save_login_info('login', response.data.auth_token)
+          setTimeout(() => {
+            history.replace('/your/messages')
+          }, 1000)
+        }
+      })
+        .catch((error) => {
+          setLoginButtonDisabled(false)
+        })
     }
+  }
+
+  const save_login_info = async (stat, auth_token,) => {
+    const userParameters = {
+      isMobile: rdd.isMobileOnly,
+      isTablet: rdd.isTablet,
+      isDesktop: rdd.isDesktop,
+      isSmartTV: rdd.isSmartTV,
+      isWearable: rdd.isWearable,
+      isConsole: rdd.isConsole,
+      isEmbedded: rdd.isEmbedded,
+      isAndroid: rdd.isAndroid,
+      isWinPhone: rdd.isWinPhone,
+      isIOS: rdd.isIOS,
+      isChrome: rdd.isChrome,
+      isFirefox: rdd.isFirefox,
+      isSafari: rdd.isSafari,
+      isOpera: rdd.isOpera,
+      isIE: rdd.isIE,
+      isEdge: rdd.isEdge,
+      isYandex: rdd.isYandex,
+      isChromium: rdd.isChromium,
+      isMobileSafari: rdd.isMobileSafari,
+      isSamsungBrowser: rdd.isSamsungBrowser,
+      osVersion: rdd.osVersion,
+      osName: rdd.osName,
+      fullBrowserVersion: rdd.fullBrowserVersion,
+      browserVersion: rdd.browserVersion,
+      browserName: rdd.browserName,
+      mobileVendor: rdd.mobileVendor,
+      mobileModel: rdd.mobileModel,
+      engineName: rdd.engineName,
+      engineVersion: rdd.engineVersion,
+      isWindows: rdd.isWindows,
+      isMacOs: rdd.isMacOs,
+      auth_token: auth_token,
+      status: stat,
+      ip: IP,
+      latitude: latitude,
+      longitude: longitude,
+      countryCode: countryCode,
+      countryName: countryName,
+      city: city,
+      district: district,
+      postCode: postCode,
+      county: county,
+      state: state,
+    }
+
+    axios.post('/api/users/user/login/info', userParameters,
+      {
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+      .then(response => {
+        setLoginDateTime(response.data.datetime)
+      })
+      .catch(error => { })
   }
 
   const onShowPass = () => {
@@ -149,7 +291,7 @@ const LoginView = (props) => {
 
           <div className='mt-30' id='label'>نام کاربری (به انگلیسی)</div>
           <div className='username'>
-            <input type="text" name='username' placeholder='' autoComplete='off' className={`text-left ${hasErrorUsername && 'input-error'}`}
+            <input type="text" readOnly={loginButtonDisabled} name='username' placeholder='' autoComplete='off' className={`text-left ${hasErrorUsername && 'input-error'}`}
               onChange={onChange} value={username} onFocus={() => { setUsernameRule(true) }}
               onBlur={() => { setUsernameRule(false) }} />
             {showEraser && <IconContext.Provider value={{ size: 18, className: "btn-eraser" }}>
@@ -171,7 +313,7 @@ const LoginView = (props) => {
 
           <div id='label'>رمز عبور</div>
           <div className='password'>
-            <input id='login-password-id' type={showEye ? 'text' : 'password'} name='password'
+            <input id='login-password-id' readOnly={loginButtonDisabled} type={showEye ? 'text' : 'password'} name='password'
               className={`text-left ${hasErrorPass && 'input-error'}`} placeholder='' onChange={onChange}
               onKeyDown={checkEnterButton} onFocus={() => { setPasswordRule(true) }}
               onBlur={() => { setPasswordRule(false) }} />
