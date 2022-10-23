@@ -264,7 +264,7 @@ button:hover {
 @media screen and (max-width: 601px) {
   .layout {
     width: 380px;
-    height: 400px;
+    height: 450px;
     top: calc(50% -200);
     left: calc(50% - 200px - 60);
   }
