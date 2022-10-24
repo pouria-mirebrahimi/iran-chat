@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const logger = require("../utils/logger");
 
 // UserModel
-const User = require("../models/user/user");
+const User = require("../models/users/user");
 
 morgan.token("date", function getDate(req) {
   return moment().tz("Asia/Tehran").format("YYYY-MM-DD HH:mm:ss");

@@ -1,25 +1,69 @@
-import logo from '../../public/res/logo.svg';
-import '../../public/css/App.css';
+import React, { Fragment } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
+// import pages
+import SignIn from "../pages/signin"
+import NewUser from "../pages/new"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Fragment>
+      <div className="App">
+
+        <Router>
+          <Switch>
+
+            <Route exact path=
+              {
+                [
+                  "/"
+                ]
+              } render={() => (
+                <Fragment>
+                  <SignIn />
+                </Fragment>
+              )} />
+
+            <Route exact path=
+              {
+                [
+                  "/your/name"
+                ]
+              } render={
+                () => (
+                  <Fragment>
+                    <NewUser />
+                  </Fragment>
+                )
+              }
+            />
+
+            <Route exact path=
+              {
+                [
+                  "/your/messages"
+                ]
+              } render={
+                () => (
+                  <Fragment>
+                    <div>messages</div>
+                  </Fragment>
+                )
+              }
+            />
+
+            <Route
+              path='*'
+              exact={true}
+              component={SignIn}
+            />
+
+          </Switch>
+        </Router>
+
+      </div>
+    </Fragment>
+  )
 }
 
-export default App;
+export default App

@@ -19,6 +19,7 @@ const connectDB = require('./api/database/db')
 
 // Routes import
 // todo: add routes here
+const user_router = require('./api/routes/users/user')
 
 const app = express()
 
@@ -30,6 +31,7 @@ app.use(access_control)
 
 // Using routes
 // todo: using routes here
+app.use('/api/users/user', user_router)
 
 // PORT for api
 let CONFIG_PORT = null
