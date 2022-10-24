@@ -117,7 +117,14 @@ const LoginView = (props) => {
           if (!response.data.verified) {
             save_login_info('new user', auth_token)
             setTimeout(() => {
-              history.replace('/your/name')
+              history.replace(
+                {
+                  pathname: '/your/name',
+                  state: {
+                    hash: response.data.hash,
+                  }
+                }
+              )
             }, 2000)
           } else {
             save_login_info('login', auth_token)
@@ -127,6 +134,8 @@ const LoginView = (props) => {
           }
         } else {
           setLoading(false)
+          Cookies.remove('auth_token', { path: '' })
+          Cookies.remove('unique_id', { path: '' })
         }
       })
       .catch(error => {
@@ -137,6 +146,9 @@ const LoginView = (props) => {
   }
 
   async function onLogin(e) {
+    setUsernameRule(false)
+    setPasswordRule(false)
+
     if (loginButtonDisabled) {
       return
     }
@@ -199,11 +211,17 @@ const LoginView = (props) => {
         Cookies.set('auth_token', response.data.auth_token, { expires: 1.0 / 24, path: '' })
         Cookies.set('unique_id', response.data.unique_id, { expires: 1.0 / 24, path: '' })
 
-
         if (response.data.showingname) {
           save_login_info('new user', response.data.auth_token)
           setTimeout(() => {
-            history.replace('/your/name')
+            history.replace(
+              {
+                pathname: '/your/name',
+                state: {
+                  hash: response.data.hash
+                }
+              }
+            )
           }, 1000)
         } else {
           save_login_info('login', response.data.auth_token)

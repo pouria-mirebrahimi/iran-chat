@@ -52,10 +52,21 @@ router.post("/sign/in", async (req, res) => {
       )
 
       const token = await user.generateAuthToken()
+
+      const hash = jwt.sign(
+        {
+          app: 'iran.chat'
+        }, config.get("JsonWebToken.jwt-secret"),
+        {
+          expiresIn: '1m'
+        }
+      )
+
       payload = {
         auth_token: token,
         unique_id: uniqueID,
         showingname: true,
+        hash: hash,
       }
 
       await user.save()
@@ -67,10 +78,30 @@ router.post("/sign/in", async (req, res) => {
 
       await user.save()
 
+      let showing_name = false
+      let hash = ''
+
+      if ('alias' in user) {
+        if (user['alias'] == undefined) {
+
+          showing_name = true
+
+          hash = jwt.sign(
+            {
+              app: 'iran.chat'
+            }, config.get("JsonWebToken.jwt-secret"),
+            {
+              expiresIn: '1m'
+            }
+          )
+        }
+      }
+
       payload = {
         auth_token: token,
         unique_id: user['uniqueId'],
-        showingname: 'alias' in user,
+        showingname: showing_name,
+        hash: hash,
       }
     }
 
@@ -123,6 +154,18 @@ router.get("/active", auth, async (req, res) => {
       throw new Error("The user is not signed")
     }
 
+    let hash = ''
+    if (!('alias' in req.user)) {
+      hash = jwt.sign(
+        {
+          app: 'iran.chat'
+        }, config.get("JsonWebToken.jwt-secret"),
+        {
+          expiresIn: '1m'
+        }
+      )
+    }
+
     res.status(200).json(
       {
         firstname: req.user['firstname'],
@@ -132,7 +175,8 @@ router.get("/active", auth, async (req, res) => {
         userId: req.user['uniqueId'],
         level: req.user['level'],
         verified: req.user['account_verified'],
-        alias: req.user['alias'] ?? ''
+        alias: req.user['alias'] ?? '',
+        hash: hash,
       }
     )
   } catch (err) {
@@ -169,8 +213,7 @@ router.get("/hash/:hash", async (req, res) => {
   try {
     const hash = req.params.hash
     const decoded = jwt.verify(hash, config.get('JsonWebToken.jwt-secret'));
-    const { mobile } = decoded
-    res.status(200).json({ mobile: mobile })
+    res.status(200).send()
   } catch (err) {
     logger.error(err.message)
     res.status(400).json(
@@ -181,38 +224,7 @@ router.get("/hash/:hash", async (req, res) => {
   }
 })
 
-router.post("/login", async (req, res) => {
-  try {
-    const { email, mobile, password } = req.body
-    const theUser = await UserModel.findByCredentials(
-      email,
-      mobile,
-      password,
-    )
-
-    if (!theUser) {
-      throw new Error('User not found!')
-    }
-
-    const token = await theUser.generateAuthToken()
-
-    await theUser.save()
-
-    const payload = {
-      auth_token: token,
-    }
-
-    res.status(200).send(payload)
-  } catch (err) {
-    res.status(405).json(
-      {
-        err: err.message
-      }
-    )
-  }
-})
-
-router.post("/signout", auth, async (req, res) => {
+router.post("/sign/out", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token
@@ -232,16 +244,26 @@ router.put('/', auth, async (req, res) => {
     }
 
     // here are valid keys that can be modified by user
-    valid_keys = ['first_name', 'last_name', 'password']
+    valid_keys = ['firstname', 'lastname', 'alias']
 
     let body = req.body
     for (let item of Object.keys(body)) {
       if (valid_keys.includes(item)) {
-        req.user[item] = body[item]
+        if (body[item] != '') {
+          req.user[item] = body[item]
+        }
       }
     }
 
     await req.user.save()
+
+    if (req.user['alias']) {  // this means alias is accepted
+      await UserModel.findOneAndUpdate({
+        _id: req.user['_id'],
+      }, {
+        account_verified: true // update the verfication field
+      })
+    }
 
     res.status(200).json({
       msg: 'The user profile updated'
