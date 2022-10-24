@@ -70,7 +70,7 @@ router.post("/sign/in", async (req, res) => {
       payload = {
         auth_token: token,
         unique_id: user['uniqueId'],
-        showingname: 'alias' in user,
+        showingname: !('alias' in user),
       }
     }
 
