@@ -129,6 +129,12 @@ const NewUser = (props) => {
     setaliasError('')
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key == 'Enter') {
+      onSubmit()
+    }
+  }
+
   return (
     <div className='window'>
       <div className="layout wide-600px">
@@ -143,7 +149,8 @@ const NewUser = (props) => {
               <div className='alias'>
                 <input type="text" readOnly={submitButtonDisabled} name='alias'
                   placeholder='نام خود را وارد کنید' autoComplete='off'
-                  className={`${hasErrorAlias && 'input-error'}`} ref={nameRef} />
+                  className={`${hasErrorAlias && 'input-error'}`} ref={nameRef}
+                  onKeyDown={handleKeyDown} />
               </div>
             </div>
 
@@ -152,7 +159,8 @@ const NewUser = (props) => {
               <div className='alias'>
                 <input type="text" readOnly={submitButtonDisabled} name='surname'
                   placeholder='نام خانوادگی خود را وارد کنید' autoComplete='off'
-                  className={`${hasErrorAlias && 'input-error'}`} ref={surnameRef} />
+                  className={`${hasErrorAlias && 'input-error'}`} ref={surnameRef}
+                  onKeyDown={handleKeyDown} />
               </div>
             </div>
           </div>
@@ -161,7 +169,8 @@ const NewUser = (props) => {
           <div className='alias'>
             <input type="text" readOnly={submitButtonDisabled} name='alias'
               placeholder='یک جمله یا نام مستعار برای خود انتخاب کنید' autoComplete='off'
-              className={`${hasErrorAlias && 'input-error'}`} ref={aliasRef} onChange={onChange} />
+              className={`${hasErrorAlias && 'input-error'}`} ref={aliasRef} onChange={onChange}
+              onKeyDown={handleKeyDown} />
           </div>
           {(aliasError.length > 0) && <div id='error'>{aliasError}</div>}
 
