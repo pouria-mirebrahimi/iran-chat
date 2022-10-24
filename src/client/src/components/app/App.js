@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 // import pages
 import SignIn from "../pages/signin"
+import Messages from "../pages/messages"
 import NewUser from "../pages/new"
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
               } render={
                 () => (
                   <Fragment>
-                    <div>messages</div>
+                    <Messages />
                   </Fragment>
                 )
               }
