@@ -122,7 +122,12 @@ button:hover {
   align-items: center;
 }
 
-.login-panel {
+.wide-600px {
+  width: 600px;
+}
+
+.login-panel,
+.new-user-panel {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -132,25 +137,34 @@ button:hover {
   padding: 10px 60px;
 }
 
-.login-panel h1 {
+.login-panel h1,
+.new-user-panel h1 {
   font-family: "Lalezar";
   color: var(--primary-color-1);
 }
 
-.login-panel h3 {
+.login-panel h3,
+.new-user-panel h3 {
   font-family: "Vazir";
   font-size: 0.85em;
   font-weight: normal;
   color: var(--primary-color-1);
 }
 
-.login-panel #label {
+.login-panel #label,
+.new-user-panel #label {
   font-size: 10px;
   margin: 20px 0 5px 0;
   color: var(--primary-color-1);
 }
 
-.login-panel #error {
+.login-panel #label #required,
+.new-user-panel #label #required {
+  color: var(--error-color-2);
+}
+
+.login-panel #error,
+.new-user-panel #error {
   font-size: 10px;
   margin: 5px 0 0px 0;
   color: var(--error-color-2);
@@ -233,6 +247,17 @@ button:hover {
   animation: bounce 0.2s 3 forwards;
 }
 
+.two-col {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.two-col>div {
+  min-width: 48%;
+}
+
 @keyframes bounce {
   0% {
     transform: translateX(0%);
@@ -263,7 +288,8 @@ button:hover {
 /* media queries */
 @media screen and (max-width: 601px) {
   .layout {
-    width: 380px;
+    box-shadow: none;
+    width: 480px;
     height: 450px;
     top: calc(50% -200);
     left: calc(50% - 200px - 60);
@@ -271,6 +297,14 @@ button:hover {
 
   .login-panel {
     padding: 10px 30px;
+  }
+
+  .two-col {
+    flex-direction: column;
+  }
+
+  .two-col>div {
+    width: 100%;
   }
 }
 

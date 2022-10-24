@@ -23,8 +23,8 @@ const UserSchema = mongoose.Schema({
     trim: false,
     unique: false,
     sparse: true,
-    minlength: 8,
-    maxlength: 40,
+    minlength: 4,
+    maxlength: 80,
   },
   username: {
     type: String,
