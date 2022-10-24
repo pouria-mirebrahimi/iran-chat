@@ -117,7 +117,14 @@ const LoginView = (props) => {
           if (!response.data.verified) {
             save_login_info('new user', auth_token)
             setTimeout(() => {
-              history.replace('/your/name')
+              history.replace(
+                {
+                  pathname: '/your/name',
+                  state: {
+                    hash: 'myhash'
+                  }
+                }
+              )
             }, 2000)
           } else {
             save_login_info('login', auth_token)
@@ -203,7 +210,14 @@ const LoginView = (props) => {
         if (response.data.showingname) {
           save_login_info('new user', response.data.auth_token)
           setTimeout(() => {
-            history.replace('/your/name')
+            history.replace(
+              {
+                pathname: '/your/name',
+                state: {
+                  hash: 'myhash'
+                }
+              }
+            )
           }, 1000)
         } else {
           save_login_info('login', response.data.auth_token)

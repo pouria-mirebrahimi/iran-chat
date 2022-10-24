@@ -181,38 +181,7 @@ router.get("/hash/:hash", async (req, res) => {
   }
 })
 
-router.post("/login", async (req, res) => {
-  try {
-    const { email, mobile, password } = req.body
-    const theUser = await UserModel.findByCredentials(
-      email,
-      mobile,
-      password,
-    )
-
-    if (!theUser) {
-      throw new Error('User not found!')
-    }
-
-    const token = await theUser.generateAuthToken()
-
-    await theUser.save()
-
-    const payload = {
-      auth_token: token,
-    }
-
-    res.status(200).send(payload)
-  } catch (err) {
-    res.status(405).json(
-      {
-        err: err.message
-      }
-    )
-  }
-})
-
-router.post("/signout", auth, async (req, res) => {
+router.post("/sign/out", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token
@@ -232,16 +201,26 @@ router.put('/', auth, async (req, res) => {
     }
 
     // here are valid keys that can be modified by user
-    valid_keys = ['first_name', 'last_name', 'password']
+    valid_keys = ['firstname', 'lastname', 'alias']
 
     let body = req.body
     for (let item of Object.keys(body)) {
       if (valid_keys.includes(item)) {
-        req.user[item] = body[item]
+        if (body[item] != '') {
+          req.user[item] = body[item]
+        }
       }
     }
 
     await req.user.save()
+
+    if (req.user['alias']) {  // this means alias is accepted
+      await UserModel.findOneAndUpdate({
+        _id: req.user['_id'],
+      }, {
+        account_verified: true // update the verfication field
+      })
+    }
 
     res.status(200).json({
       msg: 'The user profile updated'
