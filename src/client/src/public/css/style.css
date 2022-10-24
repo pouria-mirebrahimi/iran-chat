@@ -346,3 +346,18 @@ button:hover {
   font-size: 0.8em;
   margin-top: 2em;
 }
+
+#sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-width: 220px;
+}
+
+#message-window {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
