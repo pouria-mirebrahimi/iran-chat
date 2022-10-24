@@ -23,7 +23,18 @@ const NewUser = (props) => {
   const location = useLocation()
 
   useEffect(() => {
-    if (location.state == undefined) {
+    // get the token from cookies
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
+
+    if (auth_token == '') {
+      history.replace('/')
+    }
+
+    if (location.state == undefined || location.state == '') {
+      Cookies.remove('auth_token', { path: '' })
+      Cookies.remove('unique_id', { path: '' })
+
       history.replace(
         {
           pathname: '/'
@@ -31,15 +42,26 @@ const NewUser = (props) => {
       )
     } else {
       // todo: check the hash if it's valid
-      console.log(location.state.hash)
-    }
-
-    // get the token from cookies
-    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
-    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
-
-    if (auth_token == '') {
-      history.replace('/')
+      const hash = location.state.hash
+      if (auth_token != '') {
+        setsubmitButtonDisabled(false)
+        axios.get(`/api/users/user/hash/${hash}`, {
+          headers: {
+            Authorization: `Bearer ${auth_token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => {
+            // # do nothing, pass
+          })
+          .catch(error => {
+            Cookies.remove('auth_token', { path: '' })
+            Cookies.remove('unique_id', { path: '' })
+            setTimeout(() => {
+              history.replace('/')
+            }, 100)
+          })
+      }
     }
 
     return () => { }

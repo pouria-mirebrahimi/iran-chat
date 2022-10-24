@@ -52,10 +52,21 @@ router.post("/sign/in", async (req, res) => {
       )
 
       const token = await user.generateAuthToken()
+
+      const hash = jwt.sign(
+        {
+          app: 'iran.chat'
+        }, config.get("JsonWebToken.jwt-secret"),
+        {
+          expiresIn: '1m'
+        }
+      )
+
       payload = {
         auth_token: token,
         unique_id: uniqueID,
         showingname: true,
+        hash: hash,
       }
 
       await user.save()
@@ -67,10 +78,30 @@ router.post("/sign/in", async (req, res) => {
 
       await user.save()
 
+      let showing_name = false
+      let hash = ''
+
+      if ('alias' in user) {
+        if (user['alias'] == undefined) {
+
+          showing_name = true
+
+          hash = jwt.sign(
+            {
+              app: 'iran.chat'
+            }, config.get("JsonWebToken.jwt-secret"),
+            {
+              expiresIn: '1m'
+            }
+          )
+        }
+      }
+
       payload = {
         auth_token: token,
         unique_id: user['uniqueId'],
-        showingname: !('alias' in user),
+        showingname: showing_name,
+        hash: hash,
       }
     }
 
@@ -123,6 +154,18 @@ router.get("/active", auth, async (req, res) => {
       throw new Error("The user is not signed")
     }
 
+    let hash = ''
+    if (!('alias' in req.user)) {
+      hash = jwt.sign(
+        {
+          app: 'iran.chat'
+        }, config.get("JsonWebToken.jwt-secret"),
+        {
+          expiresIn: '1m'
+        }
+      )
+    }
+
     res.status(200).json(
       {
         firstname: req.user['firstname'],
@@ -132,7 +175,8 @@ router.get("/active", auth, async (req, res) => {
         userId: req.user['uniqueId'],
         level: req.user['level'],
         verified: req.user['account_verified'],
-        alias: req.user['alias'] ?? ''
+        alias: req.user['alias'] ?? '',
+        hash: hash,
       }
     )
   } catch (err) {
@@ -169,8 +213,7 @@ router.get("/hash/:hash", async (req, res) => {
   try {
     const hash = req.params.hash
     const decoded = jwt.verify(hash, config.get('JsonWebToken.jwt-secret'));
-    const { mobile } = decoded
-    res.status(200).json({ mobile: mobile })
+    res.status(200).send()
   } catch (err) {
     logger.error(err.message)
     res.status(400).json(
