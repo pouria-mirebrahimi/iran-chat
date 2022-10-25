@@ -351,8 +351,62 @@ button:hover {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  color: white;
   align-items: flex-start;
-  min-width: 220px;
+  min-width: 280px;
+  height: 100vh;
+  background-color: var(--primary-color-2);
+}
+
+#sidebar-panel .message-tile {
+  padding: 4px 12px 8px 12px;
+  margin: 3px 0px;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 0.85em;
+}
+
+#sidebar-panel .message-tile #right-col {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#sidebar-panel .message-tile #message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-content: flex-start;
+}
+
+#sidebar-panel .message-tile #message h4 {
+  margin-bottom: 3px;
+}
+
+#sidebar-panel .message-tile #avatar {
+  background-color: #f8c4b491;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  align-self: center;
+  margin-left: 10px;
+}
+
+#sidebar-panel .message-tile #state {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-end;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+#sidebar-panel .message-tile #state div:first-child {
+  margin-bottom: 3px;
+  font-size: 0.9em;
 }
 
 #message-window {
