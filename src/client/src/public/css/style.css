@@ -353,20 +353,26 @@ button:hover {
   justify-content: flex-start;
   color: white;
   align-items: flex-start;
-  min-width: 280px;
+  min-width: 380px;
   height: 100vh;
+  border: 1px solid transparent;
   background-color: var(--primary-color-2);
 }
 
 #sidebar-panel .message-tile {
-  padding: 4px 12px 8px 12px;
-  margin: 3px 0px;
+  padding: 10px 12px 10px 12px;
   width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   font-size: 0.85em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+#sidebar-panel .message-tile:hover {
+  background-color: rgba(235, 85, 85, 0.904);
 }
 
 #sidebar-panel .message-tile #right-col {
@@ -388,12 +394,23 @@ button:hover {
 }
 
 #sidebar-panel .message-tile #avatar {
-  background-color: #f8c4b491;
+  background-color: #f0ececdc;
   width: 48px;
   height: 48px;
   border-radius: 50%;
   align-self: center;
-  margin-left: 10px;
+  margin-left: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#sidebar-panel .message-tile #avatar h4 {
+  font-family: "RawajOutlined";
+  font-size: 1.5em;
+  font-weight: bold;
+  color: var(--primary-color-2);
 }
 
 #sidebar-panel .message-tile #state {
@@ -414,4 +431,9 @@ button:hover {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+}
+
+.msg-container #no-message h4 {
+  color: var(--primary-color-1);
+  font-size: 0.9em;
 }

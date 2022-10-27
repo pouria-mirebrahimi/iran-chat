@@ -42,7 +42,8 @@ function App() {
             <Route exact path=
               {
                 [
-                  "/your/messages"
+                  "/your/messages",
+                  "/your/messages/:id"
                 ]
               } render={
                 () => (
