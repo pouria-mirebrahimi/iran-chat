@@ -7,11 +7,13 @@ const validator = require("validator")
 const MessageSchema = mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
-    refPath: 'User'
+    refPath: 'User',
+    unique_with: ['to_user'],
   },
   to_user: {
     type: mongoose.Schema.Types.ObjectId,
     default: 'User',
+    unique_with: ['owner'],
   },
   message: {
     type: String,
@@ -25,6 +27,10 @@ const MessageSchema = mongoose.Schema({
   ],
   uid: {
     type: String
+  },
+  head: {
+    type: Boolean,
+    default: false,
   },
   status: {
     type: String,
