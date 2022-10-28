@@ -441,7 +441,16 @@ button:hover {
 #messages-panel {
   width: 100%;
   height: 100%;
-  padding: 10px 20px 100px 20px;
+  padding: 10px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+#messages-panel #messages {
+  width: 100%;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -497,4 +506,127 @@ button:hover {
 
 .sender .row {
   flex-direction: row;
+}
+
+#send-message {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  align-self: stretch;
+  position: relative;
+}
+
+#send-message #send-button-container {
+  position: absolute;
+  bottom: 7px;
+  left: 12px;
+}
+
+#send-message textarea:-webkit-autofill,
+#send-message textarea:-webkit-autofill:hover,
+#send-message textarea:-webkit-autofill:focus,
+#send-message textarea:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px white inset;
+  box-shadow: 0 0 0 1000px white inset;
+  transition: background-color 3600s ease-in-out 0s;
+}
+
+#send-message textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--primary-color-1);
+}
+
+#send-message textarea {
+  border: 1px solid rgb(178, 177, 185, 0.3);
+  border-radius: 5px;
+  color: var(--primary-color-1);
+  width: 100%;
+  background: transparent;
+  font-family: "Vazir";
+  font-size: 14px;
+  padding: 16px 12px 16px 8px;
+  transition: all 0.3s ease-in-out;
+  resize: none;
+  overflow: hidden;
+}
+
+#send-message textarea:focus {
+  outline: none !important;
+  border: 1px solid var(--primary-color-4);
+}
+
+#send-message .send-button {
+  transform: rotate(180deg);
+  color: var(--primary-color-2);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+#send-message .send-button:hover {
+  color: var(--primary-color-3);
+}
+
+.drag-and-drop {
+  padding: 1px 10px;
+  background-color: #fbfbfb;
+  border: 1px dashed rgb(178, 177, 185, 0.3);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: var(--primary-color-1);
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 6px;
+  height: 56px;
+}
+
+.drag-and-drop .container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.drag-and-drop .container div:last-child {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95em;
+}
+
+.drag-and-drop div>div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.drag-and-drop .container .icon {
+  font-size: 1.8em;
+  margin-left: 0px;
+  color: var(--primary-color-6);
+}
+
+.drag-and-drop:hover {
+  background-color: #f9f9f9;
+  border: 1px dashed var(--primary-color-6);
+}
+
+#attachments-details {
+  font-size: 0.7em;
+  color: var(--primary-color-1);
+  text-align: right;
+  align-self: flex-start;
+  margin: 10px 0 0 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+#attachments-details .info-icon {
+  color: var(--error-color-1);
+  margin: 2px 0 1px 5px;
+  min-width: 20px;
+}
+
+#attachments-details #attach-files {
+  margin-right: 10px;
 }
