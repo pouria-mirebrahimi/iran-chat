@@ -364,7 +364,7 @@ button:hover {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   font-size: 0.85em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.26);
   transition: all 0.2s ease-in-out;
@@ -375,10 +375,18 @@ button:hover {
   background-color: rgba(235, 85, 85, 0.904);
 }
 
-#sidebar-panel .message-tile #right-col {
+#sidebar-panel .message-tile .row {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+}
+
+#sidebar-panel .message-tile .col {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  justify-content: space-evenly;
 }
 
 #sidebar-panel .message-tile #message {
@@ -413,19 +421,6 @@ button:hover {
   color: var(--primary-color-2);
 }
 
-#sidebar-panel .message-tile #state {
-  display: flex;
-  flex-direction: column;
-  align-content: flex-end;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-#sidebar-panel .message-tile #state div:first-child {
-  margin-bottom: 3px;
-  font-size: 0.9em;
-}
-
 #message-window {
   display: flex;
   flex-direction: row;
@@ -436,4 +431,70 @@ button:hover {
 .msg-container #no-message h4 {
   color: var(--primary-color-1);
   font-size: 0.9em;
+}
+
+.msg-container {
+  width: 100%;
+  height: 100vh;
+}
+
+#messages-panel {
+  width: 100%;
+  height: 100%;
+  padding: 10px 20px 100px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+#messages-panel .message-box {
+  background-color: #f7edde;
+  width: 45%;
+  min-height: 100px;
+  padding: 15px 20px;
+  font-size: 0.8em;
+  font-family: "Vazir";
+  color: var(--primary-color-1);
+  border-radius: 0 10px 10px 10px;
+  white-space: pre-line;
+}
+
+#messages-panel .sender {
+  background-color: #dd53531c;
+  align-self: flex-start;
+  border-radius: 10px 10px 0 10px;
+}
+
+.message-box .col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+}
+
+.message-box .row {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7em;
+}
+
+.message-box .datetime {
+  display: flex;
+  flex-direction: row;
+}
+
+.message-box .datetime div:first-child {
+  margin-left: 12px;
+}
+
+.message-box .status-icon {
+  color: #DB2D43;
+}
+
+.sender .row {
+  flex-direction: row;
 }

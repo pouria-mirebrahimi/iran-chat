@@ -47,35 +47,53 @@ router.get("/:filt", auth, async (req, res) => {
         }
       ).sort(based_modified)
 
-
       if (messages.length == 0) {
         // todo: create the user saved message
+        const uid = uuid.v1()
+        today = new jDate
+        let now = new Date().toLocaleString('fa-IR', {
+          timeZone: 'Asia/Tehran'
+        })
+        now_time = now.replace('،', '')
+        now_time = now_time.replace('\u200f', '').split(' ')
+        const fa_datetime = persian_tools.digitsEnToFa(
+          today.format(
+            'dddd، D MMMM YYYY'
+          )
+        )
+
         messages = MessageModel(
           {
             owner: req.user,
             to_user: req.user,
-            message: 'خوش آمدید!',
+            message: 'خوش آمدید!'.slice(1, 30),
             head: true,
+            uid: uid,
+            sender: false,
+            status: 'RECV',
+            fatime: now_time[1],
+            fadate: now_time[0],
+            fadatetime: fa_datetime,
           }
         )
 
         await messages.save()
 
-      } else {
-        messages = await MessageModel.find(
+      }
+
+      messages = await MessageModel.find(
+        {
+          owner: req.user,
+          head: true
+        }
+      )
+        .populate(
           {
-            owner: req.user,
-            head: true
+            path: 'to_user',
+            model: 'User'
           }
         )
-          .populate(
-            {
-              path: 'to_user',
-              model: 'User'
-            }
-          )
-          .sort(based_modified)
-      }
+        .sort(based_modified)
 
       let result = []
       for (const item of messages) {
@@ -83,14 +101,58 @@ router.get("/:filt", auth, async (req, res) => {
           {
             'name': item.to_user['alias'],
             'message': item['message'],
-            'status': 'SENDING',
-            'date': 'امروز'
+            'status': item['status'],
+            'date': item['fadate'],
+            'time': item['fatime'],
+            'datetime': item['fadatetime'],
+            'uid': item['uid'],
           }
         )
       }
       res.status(200).send(result)
     } else {
-      res.status(200).send([])
+      let based_modified = {
+        modified: -1
+      }
+
+      let result = []
+
+      message_detailes = await MessageModel.findOne(
+        {
+          uid: filt
+        }
+      )
+        .populate(
+          {
+            path: 'to_user',
+            model: 'User'
+          }
+        )
+
+      let messages = await MessageModel.find(
+        {
+          owner: req.user,
+          to_user: message_detailes['to_user']
+        }
+      )
+        .sort(based_modified)
+
+      for (const item of messages) {
+        result.push(
+          {
+            'name': item.to_user['alias'],
+            'message': item['message'],
+            'status': item['status'],
+            'date': item['fadate'],
+            'time': item['fatime'],
+            'datetime': item['fadatetime'],
+            'uid': item['uid'],
+            'sender': item['sender'],
+          }
+        )
+      }
+
+      res.status(200).send(result)
     }
   } catch (e) {
     console.log(e)

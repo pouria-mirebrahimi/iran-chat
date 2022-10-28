@@ -28,6 +28,10 @@ const MessageSchema = mongoose.Schema({
   uid: {
     type: String
   },
+  sender: {
+    type: Boolean,
+    default: false,
+  },
   head: {
     type: Boolean,
     default: false,

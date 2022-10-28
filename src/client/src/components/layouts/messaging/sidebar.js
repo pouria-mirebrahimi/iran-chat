@@ -55,19 +55,18 @@ const Sidebar = () => {
         }
       })
         .then(response => {
-          console.log(response.data)
           setMessages(response.data)
         })
         .catch(error => {
-          // setTimeout(() => {
-          //   history.replace('/')
-          // }, 100)
+          setTimeout(() => {
+            history.replace('/')
+          }, 100)
         })
     }
   }
 
-  const gotoMessage = (name) => {
-    setMessageID('pouria')
+  const gotoMessage = (id) => {
+    setMessageID(id)
   }
 
   return (
@@ -76,23 +75,26 @@ const Sidebar = () => {
         messages.length > 0 && <div id="sidebar-panel">
           {
             messages.map((item, index) => {
-              return <div className="message-tile" key={index} onClick={(id) => gotoMessage(item.id)}>
-                <div id="right-col">
-                  <div id="avatar">
-                    <h4>{item.name.slice(0, 1)}</h4>
-                  </div>
-                  <div id="message">
-                    <div><h4>{item.name}</h4></div>
-                    <div>{item.message}</div>
-                  </div>
+              return <div className="message-tile"
+                key={index} onClick={(id) => gotoMessage(item.uid)}>
+                <div id="avatar">
+                  <h4>{item.name.slice(0, 1)}</h4>
                 </div>
-                <div id="state">
-                  <div>{item.date}</div>
-
-                  <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
-                    <BsCheckAll />
-                  </IconContext.Provider>
-
+                <div className='col'>
+                  <div className="row">
+                    <div><h4>{item.name}</h4></div>
+                    <div>{item.time}</div>
+                  </div>
+                  <div className="row">
+                    <div>{item.message}</div>
+                    <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                      {
+                        item['status'] == 'READ' && <BsCheckAll /> ||
+                        item['status'] == 'SENT' && <BsCheck /> ||
+                        item['status'] == 'RECV' && <RiCheckboxBlankCircleFill />
+                      }
+                    </IconContext.Provider>
+                  </div>
                 </div>
               </div>
             })
