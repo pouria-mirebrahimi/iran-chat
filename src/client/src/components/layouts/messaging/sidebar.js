@@ -40,7 +40,7 @@ const Sidebar = () => {
     getMessages()
 
     return () => { }
-  }, [])
+  }, [id])
 
 
   const getMessages = () => {
@@ -87,13 +87,30 @@ const Sidebar = () => {
                   </div>
                   <div className="row">
                     <div>{item.message}</div>
-                    <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
-                      {
-                        item['status'] == 'READ' && <BsCheckAll /> ||
-                        item['status'] == 'SENT' && <BsCheck /> ||
-                        item['status'] == 'RECV' && <RiCheckboxBlankCircleFill />
-                      }
-                    </IconContext.Provider>
+                    {
+                      item['status'] == 'RECV' && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                        {
+                          <RiCheckboxBlankCircleFill />
+                        }
+                      </IconContext.Provider>
+                    }
+
+                    {
+                      item['status'] == 'SEEN' && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                        {
+                          <BsCheckAll />
+                        }
+                      </IconContext.Provider>
+                    }
+
+                    {
+                      item['status'] == 'SENT' && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                        {
+                          <BsCheck />
+                        }
+                      </IconContext.Provider>
+                    }
+
                   </div>
                 </div>
               </div>

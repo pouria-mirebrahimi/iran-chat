@@ -426,6 +426,8 @@ button:hover {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .msg-container #no-message h4 {
@@ -436,40 +438,36 @@ button:hover {
 .msg-container {
   width: 100%;
   height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-#messages-panel {
+.msg-container #messages-insider {
   width: 100%;
   height: 100%;
-  padding: 10px 20px 20px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
   align-items: flex-end;
+  overflow-y: auto;
+  padding: 0 20px;
 }
 
-#messages-panel #messages {
-  width: 100%;
-  padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-#messages-panel .message-box {
+.msg-container #messages-insider .message-box {
   background-color: #f7edde;
   width: 45%;
   min-height: 100px;
   padding: 15px 20px;
-  font-size: 0.8em;
+  margin-top: 8px;
   font-family: "Vazir";
   color: var(--primary-color-1);
   border-radius: 0 10px 10px 10px;
   white-space: pre-line;
 }
 
-#messages-panel .sender {
+.msg-container #messages-insider .sender {
   background-color: #dd53531c;
   align-self: flex-start;
   border-radius: 10px 10px 0 10px;
@@ -485,15 +483,30 @@ button:hover {
 
 .message-box .row {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.7em;
+}
+
+.message-box p {
+  font-size: 0.8em;
+}
+
+.message-box .download-icon {
+  color: var(--primary-color-1);
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.message-box .download-icon:hover {
+  color: #2c2e4394;
 }
 
 .message-box .datetime {
   display: flex;
   flex-direction: row;
+  font-size: 0.65em;
 }
 
 .message-box .datetime div:first-child {
@@ -514,12 +527,13 @@ button:hover {
   align-items: flex-end;
   align-self: stretch;
   position: relative;
+  padding: 16px 20px 16px 20px;
 }
 
 #send-message #send-button-container {
   position: absolute;
-  bottom: 7px;
-  left: 12px;
+  bottom: 24px;
+  left: 32px;
 }
 
 #send-message textarea:-webkit-autofill,
@@ -615,7 +629,7 @@ button:hover {
   color: var(--primary-color-1);
   text-align: right;
   align-self: flex-start;
-  margin: 10px 0 0 0;
+  padding: 5px 20px 20px 20px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;

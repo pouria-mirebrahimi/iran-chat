@@ -25,3 +25,4 @@ yarn-error.log*
 logs/
 
 package-lock.json
+src/api/uploads/messages/
