@@ -117,9 +117,12 @@ router.get("/:filt", auth, async (req, res) => {
 
       let result = []
 
-      message_detailes = await MessageModel.findOne(
+      message_detailes = await MessageModel.findOneAndUpdate(
         {
-          uid: filt
+          uid: filt,
+        },
+        {
+          status: 'SEEN',
         }
       )
         .populate(
@@ -143,6 +146,7 @@ router.get("/:filt", auth, async (req, res) => {
             'name': item.to_user['alias'],
             'message': item['message'],
             'status': item['status'],
+            'hasAttachments': item['attachments'].length > 0,
             'date': item['fadate'],
             'time': item['fatime'],
             'datetime': item['fadatetime'],
@@ -157,6 +161,117 @@ router.get("/:filt", auth, async (req, res) => {
   } catch (e) {
     console.log(e)
     res.status(400).send()
+  }
+})
+
+router.post('/reply/:id', auth, upload.any(), async (req, res) => {
+  try {
+    const uid = req.params.id
+    if (uid == undefined) {
+      throw new Error('Message unique ID not found!')
+    }
+
+    the_head = await MessageModel.findOne(
+      {
+        uid: uid
+      }
+    )
+      .populate(
+        {
+          path: 'to_user',
+          model: 'User',
+        }
+      )
+
+    if (!the_head) {
+      throw new Error('Message thread not found!')
+    }
+
+    let documents = null
+    try {
+      documents = JSON.parse(req.body['documents'])
+    } catch (e) {
+      documents = req.body['documents']
+    }
+
+    if (documents == null) {
+      throw new Error('Body part can not be null!')
+    }
+
+    message = documents['message']
+    new_uid = uuid.v1()
+
+    today = new jDate
+    let now = new Date().toLocaleString('fa-IR', {
+      timeZone: 'Asia/Tehran'
+    })
+    now_time = now.replace('،', '')
+    now_time = now_time.replace('\u200f', '').split(' ')
+    const fa_datetime = persian_tools.digitsEnToFa(
+      today.format(
+        'dddd، D MMMM YYYY'
+      )
+    )
+
+    allpath = []
+    if ('files' in req) {
+      if (req.files.length != 0) {
+        const dir = `src/api/uploads/messages/${new_uid}`
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir)
+        }
+
+        var files = req.files
+        files.forEach(element => {
+          let fullpath = path.join(dir, `${Date.now().toString()}-${(element.originalname).replace(/\s/g, '')}`)
+          allpath = [...allpath, fullpath]
+          fs.writeFile(fullpath, element.buffer, function (err) {
+            if (err) {
+              logger.error(`${err.message}  ${err.stack}`)
+              throw new Error(err.message)
+            }
+            logger.info('attachments saved successfully')
+          })
+        })
+      }
+    }
+
+    if (message == '') {
+      message = 'آپلود فایل'
+    }
+
+    new_message = MessageModel(
+      {
+        owner: req.user,
+        to_user: the_head.to_user,
+        message: message,
+        attachments: allpath,
+        head: true,
+        uid: new_uid,
+        sender: true,
+        status: 'SENT',
+        fatime: now_time[1],
+        fadate: now_time[0],
+        fadatetime: fa_datetime,
+      }
+    )
+
+    await new_message.save()
+
+    await MessageModel.findOneAndUpdate(
+      {
+        uid: the_head.uid
+      },
+      {
+        head: false,
+      }
+    )
+
+    res.status(200).json({
+      status: 'ok'
+    })
+  } catch (e) {
+    res.status(400).send(e.toString())
   }
 })
 
