@@ -38,7 +38,7 @@ const MessageSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['SENDING', 'FAILED', 'SENT', 'RECV', 'READ'],
+    enum: ['SENDING', 'FAILED', 'SENT', 'RECV', 'SEEN'],
     default: 'SENDING',
   },
   fatime: {
