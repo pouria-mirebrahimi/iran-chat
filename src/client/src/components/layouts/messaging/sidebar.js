@@ -37,7 +37,9 @@ const Sidebar = () => {
 
   useEffect(() => {
     // todo: get all sessions - show last message
-    getMessages()
+    setTimeout(() => {
+      getMessages()
+    }, 100)
 
     return () => { }
   }, [id])
@@ -56,12 +58,17 @@ const Sidebar = () => {
       })
         .then(response => {
           setMessages(response.data)
+          console.log(response.data)
         })
         .catch(error => {
           setTimeout(() => {
             history.replace('/')
           }, 100)
         })
+    } else {
+      setTimeout(() => {
+        history.replace('/')
+      }, 100)
     }
   }
 
@@ -88,7 +95,7 @@ const Sidebar = () => {
                   <div className="row">
                     <div>{item.message}</div>
                     {
-                      item['status'] == 'RECV' && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                      (!item['sender'] && item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
                         {
                           <RiCheckboxBlankCircleFill />
                         }
@@ -96,7 +103,7 @@ const Sidebar = () => {
                     }
 
                     {
-                      item['status'] == 'SEEN' && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                      (item['sender'] && item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
                         {
                           <BsCheckAll />
                         }
@@ -104,7 +111,7 @@ const Sidebar = () => {
                     }
 
                     {
-                      item['status'] == 'SENT' && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                      (!item['sender'] && item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
                         {
                           <BsCheck />
                         }

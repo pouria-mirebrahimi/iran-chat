@@ -29,6 +29,31 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color-2);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: all 0.3s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color-3);
+  transition: all 0.3s ease-in-out;
+  background-clip: content-box;
+}
+
 .mt-20 {
   margin-top: 20px !important;
 }
@@ -354,6 +379,7 @@ button:hover {
   color: white;
   align-items: flex-start;
   min-width: 380px;
+  max-width: 380px;
   height: 100vh;
   border: 1px solid transparent;
   background-color: var(--primary-color-2);
@@ -430,9 +456,10 @@ button:hover {
   overflow: hidden;
 }
 
-.msg-container #no-message h4 {
+#no-message h4 {
   color: var(--primary-color-1);
   font-size: 0.9em;
+  align-self: center;
 }
 
 .msg-container {
@@ -458,8 +485,7 @@ button:hover {
 .msg-container #messages-insider .message-box {
   background-color: #f7edde;
   width: 45%;
-  min-height: 100px;
-  padding: 15px 20px;
+  padding: 12px 14px;
   margin-top: 8px;
   font-family: "Vazir";
   color: var(--primary-color-1);
@@ -507,6 +533,7 @@ button:hover {
   display: flex;
   flex-direction: row;
   font-size: 0.65em;
+  margin-top: 8px;
 }
 
 .message-box .datetime div:first-child {
@@ -557,7 +584,7 @@ button:hover {
   background: transparent;
   font-family: "Vazir";
   font-size: 14px;
-  padding: 16px 12px 16px 8px;
+  padding: 16px 12px 16px 50px;
   transition: all 0.3s ease-in-out;
   resize: none;
   overflow: hidden;

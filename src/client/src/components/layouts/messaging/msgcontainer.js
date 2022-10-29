@@ -43,6 +43,8 @@ import MessagingContext from '../../../context/messaging/context'
 
 const MSGContainer = () => {
 
+  const history = useHistory()
+
   const messagingContext = useContext(MessagingContext)
 
   const [fileDataURL, setFileDataURL] = useState(null)
@@ -171,10 +173,14 @@ const MSGContainer = () => {
   }
 
   const onMessageChange = (e) => {
-    let lines = (e.target.value)?.split('\n')
-    if (lines.length < 5) {
-      const height = ((lines.length - 1) * 25 + 56).toString() + 'px'
-      setCustomHeight(height)
+    const lines = (e.target.value)?.split('\n')
+    const words_mod = ((e.target.value).length / 250).toFixed()
+
+    if (lines.length < 5 && words_mod < 5) {
+      const height_for_lines = (lines.length - 1) * 25 + 56
+      const height_for_words = (words_mod) * 25 + 56
+      const max_height = Math.max(height_for_lines, height_for_words)
+      setCustomHeight(max_height.toString() + 'px')
     }
 
     let tempMsgs = messages
@@ -227,7 +233,7 @@ const MSGContainer = () => {
         }
       )
         .then(response => {
-          console.log(response.data)
+          setMessageID(response.data.uid)
 
           setTimeout(() => {
             setLockUI(false)
@@ -238,18 +244,60 @@ const MSGContainer = () => {
 
           setFiles([])
           msgRef.current.value = ''
+          setCustomHeight('56px')
 
         })
         .catch(error => {
-          console.log(error.response.data)
           setTimeout(() => {
-            setLockUI(false)
+            history.replace('/')
           }, 100)
         })
     }
   }
 
-  const download_attachments = () => { }
+  const download_attachments = (id) => {
+
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    if (auth_token != '') {
+      const url = `/api/messages/attachments/${id}`
+      axios.get(url,
+        {
+          responseType: 'blob',
+          headers: {
+            Authorization: `Bearer ${auth_token}`,
+            'Content-type': 'application/zip'
+          }
+        }
+      )
+        .then(response => {
+          console.log(response.status)
+          let blob = new Blob([response.data], { type: 'application/zip' })
+          // let blob = response.blob()
+          const url = window.URL.createObjectURL(
+            // new Blob([blob]),
+            blob
+          )
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute(
+            'download',
+            `${id}.zip`,
+          )
+
+          // append to html link element page
+          document.body.appendChild(link)
+
+          // start download
+          link.click()
+
+          // Clean up and remove the link
+          link.parentNode.removeChild(link)
+        })
+        .catch(error => {
+          console.log(error.response.data)
+        })
+    }
+  }
 
 
   if (loading)
@@ -261,7 +309,7 @@ const MSGContainer = () => {
     )
   else if (id == undefined)
     return (
-      <div className="window msg-container">
+      <div className="window">
         <div id="no-message">
           <h4>هیچ پیامی انتخاب نشده است!</h4>
         </div>
@@ -279,7 +327,7 @@ const MSGContainer = () => {
                   <div className="row">
                     <p>{item.message}</p>
                     {
-                      item['hasAttachments'] && <div id='attachments' onClick={() => download_attachments(item['id'])}>
+                      item['hasAttachments'] && <div id='attachments' onClick={() => download_attachments(item['uid'])}>
                         <IconContext.Provider value={{ className: "download-icon" }}>
                           <HiOutlineDocumentDownload />
                         </IconContext.Provider>
