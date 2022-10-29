@@ -1,11 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useHistory, useLocation, generatePath } from 'react-router-dom'
+import { useHistory, useLocation, generatePath, useParams } from 'react-router-dom'
 import ScaleLoader from 'react-spinners/ScaleLoader'
 
-const Messages = () => {
+import Sidebar from '../layouts/messaging/sidebar'
+import MSGContainer from '../layouts/messaging/msgcontainer'
+
+import MessagingState from '../../context/messaging/state'
+
+const Messages = (props) => {
+
+  useEffect(() => {
+    return () => { }
+  }, [])
+
+
   return (
-    <div>
-      Messages
+    <div id="message-window">
+      <MessagingState>
+        <Sidebar />
+        <MSGContainer />
+      </MessagingState>
     </div>
   )
 }
