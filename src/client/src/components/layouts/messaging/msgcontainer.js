@@ -167,7 +167,9 @@ const MSGContainer = () => {
           }
         })
         .catch(error => {
-          console.log(error.response.data)
+          setTimeout(() => {
+            history.replace('/')
+          }, 1000)
         })
     }
   }
@@ -270,7 +272,6 @@ const MSGContainer = () => {
         }
       )
         .then(response => {
-          console.log(response.status)
           let blob = new Blob([response.data], { type: 'application/zip' })
           // let blob = response.blob()
           const url = window.URL.createObjectURL(
@@ -293,9 +294,7 @@ const MSGContainer = () => {
           // Clean up and remove the link
           link.parentNode.removeChild(link)
         })
-        .catch(error => {
-          console.log(error.response.data)
-        })
+        .catch(error => { })
     }
   }
 

@@ -176,7 +176,6 @@ router.get("/:filt", auth, async (req, res) => {
       res.status(200).send(result)
     }
   } catch (e) {
-    console.log(e)
     res.status(400).send()
   }
 })
@@ -319,7 +318,6 @@ router.get('/attachments/:id', auth, async (req, res) => {
     res.set('Content-Length', data.length)
     res.send(data)
   } catch (e) {
-    console.log(e)
     res.status(400).send(e.toString())
   }
 })

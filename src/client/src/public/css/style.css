@@ -94,6 +94,37 @@ button {
   transition: all 0.3s ease-in-out;
 }
 
+#contact-search-box {
+  height: 45px;
+  text-align: right;
+  padding-right: 12px;
+  border: 3px solid var(--primary-color-2);
+  background-color: #f8eaea;
+  caret-color: var(--primary-color-3);
+}
+
+#menu-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 10px 8px 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+#menu-bar div:nth-child(2) {
+  flex: 1;
+}
+
+.menu-icon {
+  color: white;
+}
+
+#contact-search-box::placeholder {
+  color: var(--primary-color-6);
+}
+
 button {
   background: var(--primary-color-2);
   border: 1px solid var(--primary-color-2);

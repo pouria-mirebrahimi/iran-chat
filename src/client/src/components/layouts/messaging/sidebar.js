@@ -11,18 +11,21 @@ import {
 } from 'react-icons/bs'
 
 import {
-  RiCheckboxBlankCircleFill
+  RiCheckboxBlankCircleFill,
+  RiUserSearchLine,
 } from 'react-icons/ri'
 
 import {
-  CgRadioChecked
-} from 'react-icons/cg'
+  FiMenu
+} from 'react-icons/fi'
 
 import { IconContext } from 'react-icons/lib'
 
 import MessagingContext from '../../../context/messaging/context'
 
 const Sidebar = () => {
+
+  const searchRef = useRef('')
 
   const history = useHistory()
 
@@ -58,7 +61,9 @@ const Sidebar = () => {
       })
         .then(response => {
           setMessages(response.data)
-          console.log(response.data)
+          setTimeout(() => {
+            searchRef.current?.focus()
+          }, 500)
         })
         .catch(error => {
           setTimeout(() => {
@@ -80,6 +85,15 @@ const Sidebar = () => {
     <Fragment>
       {
         messages.length > 0 && <div id="sidebar-panel">
+          <div id='menu-bar'>
+            <IconContext.Provider value={{ size: 20, className: "menu-icon" }}>
+              <RiUserSearchLine />
+            </IconContext.Provider>
+            <div>
+              <input ref={searchRef} id='contact-search-box' name='search'
+                placeholder='عبارت مستعار، شناسه، کاربر، گروه' />
+            </div>
+          </div>
           {
             messages.map((item, index) => {
               return <div className="message-tile"
