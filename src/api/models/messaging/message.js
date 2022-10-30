@@ -8,12 +8,6 @@ const MessageSchema = mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     refPath: 'User',
-    unique_with: ['to_user'],
-  },
-  to_user: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: 'User',
-    unique_with: ['owner'],
   },
   message: {
     type: String,
@@ -28,19 +22,14 @@ const MessageSchema = mongoose.Schema({
   uid: {
     type: String
   },
-  sender: {
-    type: Boolean,
-    default: false,
-  },
-  head: {
-    type: Boolean,
-    default: false,
-  },
-  status: {
-    type: String,
-    enum: ['SENDING', 'FAILED', 'SENT', 'RECV', 'SEEN'],
-    default: 'SENDING',
-  },
+  seen: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'User',
+      }
+    }
+  ],
   fatime: {
     type: String,
   },
