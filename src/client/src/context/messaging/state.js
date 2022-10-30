@@ -1,11 +1,12 @@
 import React, { useReducer } from 'react'
 import MessagingContext from './context'
 import MessagingReducer from './reducer'
-import { SET_MESSAGE_ID } from './types'
+import { SET_MESSAGE_ID, SET_CONTACT_ID } from './types'
 
 const MessagingState = props => {
   const initialState = {
-    id: undefined
+    message_id: undefined, // this is the message ID
+    contact_id: undefined, // this is the contact ID
   }
 
   const [state, dispatch] = useReducer(MessagingReducer, initialState);
@@ -20,11 +21,23 @@ const MessagingState = props => {
     })
   }
 
+  // set message ID
+  const setContact = (id) => {
+    dispatch({
+      type: SET_CONTACT_ID,
+      payload: {
+        id,
+      },
+    })
+  }
+
   return (
     <MessagingContext.Provider
       value={{
-        id: state.id,
+        message_id: state.message_id,
+        contact_id: state.contact_id,
         setMessageID,
+        setContact,
       }}
     >
       {props.children}
