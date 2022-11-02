@@ -347,7 +347,7 @@ router.get("/thread/:id", auth, async (req, res) => {
           time: message['fatime'],
           datetime: message['fadatetime'],
           uid: message['uid'],
-          sender: (req.user.uid === message.owner.uid) && !message.sent_by_server,
+          sender: (req.user.uniqueId === message.owner.uniqueId) && !message.sent_by_server,
           status: status,
         }
       )
