@@ -9,6 +9,10 @@ const MessageSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     refPath: 'User',
   },
+  sent_by_server: {
+    type: Boolean,
+    default: false,
+  },
   message: {
     type: String,
     trim: true,
@@ -19,6 +23,10 @@ const MessageSchema = mongoose.Schema({
       type: String
     }
   ],
+  thread: {
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: 'Thread'
+  },
   uid: {
     type: String
   },

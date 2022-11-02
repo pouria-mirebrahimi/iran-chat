@@ -21,6 +21,7 @@ const connectDB = require('./api/database/db')
 // todo: add routes here
 const user_router = require('./api/routes/users/user')
 const messaging_router = require('./api/routes/messaging/messaging')
+const thread_router = require('./api/routes/messaging/threads')
 
 const app = express()
 
@@ -33,7 +34,8 @@ app.use(access_control)
 // Using routes
 // todo: using routes here
 app.use('/api/users/user', user_router)
-app.use('/api/messages/', messaging_router)
+// app.use('/api/messages', messaging_router)
+app.use('/api/threads', thread_router)
 
 // PORT for api
 let CONFIG_PORT = null

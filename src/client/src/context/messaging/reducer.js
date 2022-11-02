@@ -1,4 +1,4 @@
-import { SET_MESSAGE_ID, SET_CONTACT_ID } from './types';
+import { SET_MESSAGE_ID, SET_CONTACT_ID, RELOAD_DATA } from './types';
 
 export default (state, action) => {
   switch (action.type) {
@@ -11,6 +11,11 @@ export default (state, action) => {
       return {
         ...state,
         contact_id: action.payload.id,
+      }
+    case RELOAD_DATA:
+      return {
+        ...state,
+        reload: action.payload.rnd,
       }
     default:
       return state

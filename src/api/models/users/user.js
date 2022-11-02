@@ -104,6 +104,14 @@ const UserSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  threads: [
+    {
+      thread: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'Thread',
+      }
+    }
+  ],
   tokens: [
     {
       token: {

@@ -428,6 +428,10 @@ button:hover {
   cursor: pointer;
 }
 
+#sidebar-panel .active-tile {
+  background-color: var(--primary-color-3);
+}
+
 #sidebar-panel .message-tile:hover {
   background-color: rgba(235, 85, 85, 0.904);
 }
@@ -447,11 +451,10 @@ button:hover {
 }
 
 #sidebar-panel .message-tile #message {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-content: flex-start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
 }
 
 #sidebar-panel .message-tile #message h4 {
@@ -547,6 +550,9 @@ button:hover {
 
 .message-box p {
   font-size: 0.8em;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  width: 100%;
 }
 
 .message-box .download-icon {

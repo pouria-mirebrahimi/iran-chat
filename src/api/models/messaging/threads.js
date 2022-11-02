@@ -5,22 +5,6 @@ const jwt = require("jsonwebtoken")
 const validator = require("validator")
 
 const ThreadSchema = mongoose.Schema({
-  users: [
-    {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        refPath: 'User',
-      }
-    }
-  ],
-  messages: [
-    {
-      message: {
-        type: mongoose.Schema.Types.ObjectId,
-        refPath: 'Message'
-      }
-    }
-  ],
   uid: {
     type: String
   },

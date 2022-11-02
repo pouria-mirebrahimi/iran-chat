@@ -1,12 +1,13 @@
 import React, { useReducer } from 'react'
 import MessagingContext from './context'
 import MessagingReducer from './reducer'
-import { SET_MESSAGE_ID, SET_CONTACT_ID } from './types'
+import { SET_MESSAGE_ID, SET_CONTACT_ID, RELOAD_DATA } from './types'
 
 const MessagingState = props => {
   const initialState = {
     message_id: undefined, // this is the message ID
     contact_id: undefined, // this is the contact ID
+    reload: undefined,
   }
 
   const [state, dispatch] = useReducer(MessagingReducer, initialState);
@@ -31,11 +32,23 @@ const MessagingState = props => {
     })
   }
 
+  // reload data
+  const newReload = () => {
+    dispatch({
+      type: RELOAD_DATA,
+      payload: {
+        rnd: Math.random(),
+      },
+    })
+  }
+
   return (
     <MessagingContext.Provider
       value={{
         message_id: state.message_id,
         contact_id: state.contact_id,
+        reload: state.reload,
+        newReload,
         setMessageID,
         setContact,
       }}

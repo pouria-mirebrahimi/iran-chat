@@ -62,8 +62,12 @@ const MSGContainer = () => {
   const msgRef = useRef('')
 
   const {
-    id,
+    message_id,
+    contact_id,
+    reload,
     setMessageID,
+    setContact,
+    newReload,
   } = messagingContext
 
   const [loading, setloading] = useState(true)
@@ -74,15 +78,22 @@ const MSGContainer = () => {
   const [customHeight, setCustomHeight] = useState('56px')
 
   useEffect(() => {
-    if (id != undefined) {
-      fetchMessages(id)
+    if (message_id != undefined && message_id != '') {
+      setTimeout(() => {
+        fetchMessages(message_id)
+      }, 1)
+    } else if (contact_id != undefined && contact_id != '') {
+      setTimeout(() => {
+        fetchMessagesByUserUID(contact_id)
+      }, 1)
     } else {
       setTimeout(() => {
         setloading(false)
       }, 1000)
     }
+
     return () => { }
-  }, [id])
+  }, [reload])
 
   function MyDropzone() {
     const onDrop = useCallback((acceptedFiles) => {
@@ -96,6 +107,8 @@ const MSGContainer = () => {
         reader.onload = () => {
           const binaryStr = reader.result
           setFileDataURL(binaryStr)
+          let message_div = document.getElementById("messages-insider");
+          message_div.scrollTop = message_div.scrollHeight;
         }
         reader.readAsDataURL(file)
       })
@@ -127,19 +140,19 @@ const MSGContainer = () => {
             {/* <p>کلیک کنید، یا فایل‌های ضمیمه خود را به این قسمت بکشید.</p> */}
 
             <div>
-              {/* png, jpg, jpeg, pdf, doc, docx, txt */}
+              {/* png, jpg, jpeg, pdf, doc, docx, txt, mov, mp4, mp3, wav */}
             </div>
           </div>
         </div>
     )
   }
 
-  const fetchMessages = (_id) => {
+  const fetchMessages = (id) => {
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
     const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
 
     if (auth_token != '') {
-      axios.get(`/api/messages/${_id}`, {
+      axios.get(`/api/threads/thread/${id}`, {
         headers: {
           Authorization: `Bearer ${auth_token}`,
           'Content-Type': 'application/json'
@@ -148,22 +161,38 @@ const MSGContainer = () => {
         .then(response => {
           if (response.status === 200) {
             setmessages(response.data)
-            let tempMsgs = response.data
-            const refs = tempMsgs.reduce((res, inp) => {
-              res[inp.id] = React.createRef()
-              return res
-            }, {})
-            setRefs(refs)
+
+            let message_div = document.getElementById("messages-insider");
+            message_div.scrollTop = message_div.scrollHeight;
+          }
+        })
+        .catch(error => {
+          setTimeout(() => {
+            history.replace('/')
+          }, 1000)
+        })
+    }
+  }
+
+  const fetchMessagesByUserUID = (cid) => {
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
+
+    if (auth_token != '') {
+      axios.get(`/api/threads/contact/${cid}`, {
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if (response.status === 200) {
+            setmessages(response.data)
 
             setTimeout(() => {
-              let msg_id = tempMsgs[tempMsgs.length - 1]['id']
-              setlastMessageID(msg_id)
-              refs[msg_id].current.scrollIntoView({
-                behavior: 'smooth',
-                duration: 100,
-                block: 'end',
-              })
-            }, 100)
+              let message_div = document.getElementById("messages-insider")
+              message_div.scrollTop = message_div.scrollHeight
+            }, 50)
           }
         })
         .catch(error => {
@@ -185,22 +214,8 @@ const MSGContainer = () => {
       setCustomHeight(max_height.toString() + 'px')
     }
 
-    let tempMsgs = messages
-    const refs = tempMsgs.reduce((res, inp) => {
-      res[inp.id] = React.createRef()
-      return res
-    }, {})
-    setRefs(refs)
-
-    setTimeout(() => {
-      let msg_id = tempMsgs[tempMsgs.length - 1]['id']
-      setlastMessageID(msg_id)
-      refs[msg_id].current.scrollIntoView({
-        behavior: 'smooth',
-        duration: 100,
-        block: 'end',
-      })
-    }, 100)
+    let message_div = document.getElementById("messages-insider")
+    message_div.scrollTop = message_div.scrollHeight
   }
 
   const sendMessage = () => {
@@ -226,7 +241,14 @@ const MSGContainer = () => {
 
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
     if (auth_token != '') {
-      axios.post(`/api/messages/reply/${id}`, data,
+      let url = ''
+      if (message_id != undefined && message_id != '') {
+        url = `/api/threads/thread/message/reply/${message_id}`
+      } else if (contact_id != undefined && contact_id != '') {
+        url = `/api/threads/thread/contact/reply/${contact_id}`
+      }
+
+      axios.post(url, data,
         {
           headers: {
             Authorization: `Bearer ${auth_token}`,
@@ -236,13 +258,14 @@ const MSGContainer = () => {
       )
         .then(response => {
           setMessageID(response.data.uid)
+          newReload()
 
           setTimeout(() => {
             setLockUI(false)
           }, 100)
 
           // ! here we need fetch messages update
-          fetchMessages(id)
+          // fetchMessages(response.data.uid)
 
           setFiles([])
           msgRef.current.value = ''
@@ -261,7 +284,7 @@ const MSGContainer = () => {
 
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
     if (auth_token != '') {
-      const url = `/api/messages/attachments/${id}`
+      const url = `/api/threads/attachments/${id}`
       axios.get(url,
         {
           responseType: 'blob',
@@ -306,7 +329,7 @@ const MSGContainer = () => {
         <h4>در حال دریافت پیام‌ها...</h4>
       </div>
     )
-  else if (id == undefined)
+  else if (message_id == undefined && contact_id == undefined)
     return (
       <div className="window">
         <div id="no-message">
@@ -339,23 +362,25 @@ const MSGContainer = () => {
                       <div>{item.time}</div>
                     </div>
                     {
-                      item['status'] == 'RECV' && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                      (item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
                         {
                           <RiCheckboxBlankCircleFill />
                         }
                       </IconContext.Provider>
                     }
+
                     {
-                      (item['status'] == 'SEEN' && item['sender']) && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                      (item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
                         {
-                          <BsCheckAll />
+                          <BsCheck />
                         }
                       </IconContext.Provider>
                     }
+
                     {
-                      (item['status'] == 'SENT' && item['sender']) && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                      (item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
                         {
-                          <BsCheck />
+                          <BsCheckAll />
                         }
                       </IconContext.Provider>
                     }

@@ -24,6 +24,8 @@ const auth = require("../../middlewares/auth")
 // models
 const UserModel = require("../../models/users/user")
 const LoginInfoModel = require("../../models/users/logininfo")
+const ThreadModel = require("../../models/messaging/threads")
+const MessageModel = require("../../models/messaging/message")
 
 // routers
 const router = new express.Router()
