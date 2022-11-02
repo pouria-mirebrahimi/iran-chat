@@ -24,6 +24,8 @@ const auth = require("../../middlewares/auth")
 // models
 const UserModel = require("../../models/users/user")
 const LoginInfoModel = require("../../models/users/logininfo")
+const ThreadModel = require("../../models/messaging/threads")
+const MessageModel = require("../../models/messaging/message")
 
 // routers
 const router = new express.Router()
@@ -528,7 +530,6 @@ router.put('/identification', auth, upload.any(), async (req, res) => {
 
     res.status(200).send('user identification data saved successfully')
   } catch (e) {
-    console.log(e)
     res.status(400).send(e.toString())
   }
 })
@@ -597,7 +598,6 @@ router.post('/email/verify', async (req, res) => {
 
     res.status(200).send('email verified successfully')
   } catch (e) {
-    console.log(e)
     res.status(400).send(e.toString())
   }
 })

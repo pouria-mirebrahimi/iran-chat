@@ -94,6 +94,37 @@ button {
   transition: all 0.3s ease-in-out;
 }
 
+#contact-search-box {
+  height: 45px;
+  text-align: right;
+  padding-right: 12px;
+  border: 3px solid var(--primary-color-2);
+  background-color: #f8eaea;
+  caret-color: var(--primary-color-3);
+}
+
+#menu-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 10px 8px 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+#menu-bar div:nth-child(2) {
+  flex: 1;
+}
+
+.menu-icon {
+  color: white;
+}
+
+#contact-search-box::placeholder {
+  color: var(--primary-color-6);
+}
+
 button {
   background: var(--primary-color-2);
   border: 1px solid var(--primary-color-2);
@@ -397,6 +428,10 @@ button:hover {
   cursor: pointer;
 }
 
+#sidebar-panel .active-tile {
+  background-color: var(--primary-color-3);
+}
+
 #sidebar-panel .message-tile:hover {
   background-color: rgba(235, 85, 85, 0.904);
 }
@@ -416,11 +451,10 @@ button:hover {
 }
 
 #sidebar-panel .message-tile #message {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-content: flex-start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
 }
 
 #sidebar-panel .message-tile #message h4 {
@@ -516,6 +550,9 @@ button:hover {
 
 .message-box p {
   font-size: 0.8em;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  width: 100%;
 }
 
 .message-box .download-icon {

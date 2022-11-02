@@ -11,12 +11,13 @@ import {
 } from 'react-icons/bs'
 
 import {
-  RiCheckboxBlankCircleFill
+  RiCheckboxBlankCircleFill,
+  RiUserSearchLine,
 } from 'react-icons/ri'
 
 import {
-  CgRadioChecked
-} from 'react-icons/cg'
+  FiMenu
+} from 'react-icons/fi'
 
 import { IconContext } from 'react-icons/lib'
 
@@ -24,41 +25,48 @@ import MessagingContext from '../../../context/messaging/context'
 
 const Sidebar = () => {
 
+  const searchRef = useRef('')
+
   const history = useHistory()
 
-  const [messages, setMessages] = useState([])
+  const [threads, setThreads] = useState([])
 
   const messagingContext = useContext(MessagingContext)
 
   const {
-    id,
+    message_id,
+    contact_id,
+    reload,
     setMessageID,
+    setContact,
+    newReload,
   } = messagingContext
 
   useEffect(() => {
-    // todo: get all sessions - show last message
+
     setTimeout(() => {
-      getMessages()
+      getThreads()
     }, 100)
 
     return () => { }
-  }, [id])
+  }, [reload])
 
 
-  const getMessages = () => {
+  const getThreads = () => {
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
     const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
-
     if (auth_token != '') {
-      axios.get(`/api/messages/all`, {
+      axios.get(`/api/threads`, {
         headers: {
           Authorization: `Bearer ${auth_token}`,
           'Content-Type': 'application/json'
         }
       })
         .then(response => {
-          setMessages(response.data)
-          console.log(response.data)
+          setThreads(response.data)
+          setTimeout(() => {
+            searchRef.current?.focus()
+          }, 500)
         })
         .catch(error => {
           setTimeout(() => {
@@ -72,30 +80,75 @@ const Sidebar = () => {
     }
   }
 
-  const gotoMessage = (id) => {
-    setMessageID(id)
+  const search = (query) => {
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
+
+    if (auth_token != '') {
+      axios.get(`/api/threads/search/${query}`, {
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          setThreads(response.data)
+        })
+        .catch(error => {
+        })
+    } else {
+      setTimeout(() => {
+        history.replace('/')
+      }, 100)
+    }
+  }
+
+  const gotoMessage = (uid, cid) => {
+    searchRef.current.value = ''
+    setContact(cid)
+    setMessageID(uid)
+    newReload()
+  }
+
+  const onSearch = (e) => {
+    const query = e.target?.value
+    if (query.length == 0) {
+      getThreads()
+    } else {
+      search(query)
+    }
   }
 
   return (
     <Fragment>
       {
-        messages.length > 0 && <div id="sidebar-panel">
+        <div id="sidebar-panel">
+          <div id='menu-bar'>
+            <IconContext.Provider value={{ size: 20, className: "menu-icon" }}>
+              <RiUserSearchLine />
+            </IconContext.Provider>
+            <div>
+              <input ref={searchRef} id='contact-search-box' name='search'
+                onChange={onSearch}
+                placeholder='عبارت مستعار، شناسه، کاربر، گروه' />
+            </div>
+          </div>
           {
-            messages.map((item, index) => {
-              return <div className="message-tile"
-                key={index} onClick={(id) => gotoMessage(item.uid)}>
+            threads.map((item, index) => {
+              return <div className={`message-tile ${(item.uid == message_id) && 'active-tile'}`}
+                key={index} onClick={(uid, cid) => gotoMessage(item.uid, item.contact)}>
                 <div id="avatar">
                   <h4>{item.name.slice(0, 1)}</h4>
                 </div>
                 <div className='col'>
                   <div className="row">
                     <div><h4>{item.name}</h4></div>
-                    <div>{item.time}</div>
+                    <div>{item.fatime}</div>
                   </div>
                   <div className="row">
-                    <div>{item.message}</div>
+                    <div id="message">{item.message}</div>
                     {
-                      (!item['sender'] && item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                      (item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
                         {
                           <RiCheckboxBlankCircleFill />
                         }
@@ -103,17 +156,17 @@ const Sidebar = () => {
                     }
 
                     {
-                      (item['sender'] && item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                      (item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
                         {
-                          <BsCheckAll />
+                          <BsCheck />
                         }
                       </IconContext.Provider>
                     }
 
                     {
-                      (!item['sender'] && item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                      (item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
                         {
-                          <BsCheck />
+                          <BsCheckAll />
                         }
                       </IconContext.Provider>
                     }
