@@ -46,7 +46,7 @@ const Sidebar = () => {
 
     setTimeout(() => {
       getThreads()
-    }, 100)
+    }, 300)
 
     return () => { }
   }, [reload])
@@ -143,7 +143,7 @@ const Sidebar = () => {
                 <div className='col'>
                   <div className="row">
                     <div><h4>{item.name}</h4></div>
-                    <div>{item.fatime}</div>
+                    <div>{item.fadatetime}</div>
                   </div>
                   <div className="row">
                     <div id="message">{item.message}</div>

@@ -258,7 +258,10 @@ const MSGContainer = () => {
       )
         .then(response => {
           setMessageID(response.data.uid)
-          newReload()
+
+          setTimeout(() => {
+            newReload()
+          }, 100)
 
           setTimeout(() => {
             setLockUI(false)

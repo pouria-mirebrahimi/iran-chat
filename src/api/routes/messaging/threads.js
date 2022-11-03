@@ -13,6 +13,9 @@ const date = require('date-and-time')
 const persian_tools = require('@persian-tools/persian-tools')
 const admz = require('adm-zip')
 
+// datetime tools
+const datetime = require('../../utils/datetime')
+
 // logger
 const logger = require('../../utils/logger')
 
@@ -153,7 +156,8 @@ router.get("/", auth, async (req, res) => {
             'seen',
             'fatime',
             'fadate',
-            'fadatetime'
+            'fadatetime',
+            'created'
           ],
           populate: [
             {
@@ -221,6 +225,32 @@ router.get("/", auth, async (req, res) => {
         }
       }
 
+      const created = head.created.toLocaleString(
+        'fa-IR', { timeZone: 'Asia/Tehran', hour12: false }
+      )
+
+      let head_datetime = head.fadatetime
+      if (datetime(created)?.typ == 'h' ||
+        datetime(created)?.typ == 'm' ||
+        datetime(created)?.typ == 's') {
+        head_datetime = head.fatime
+      } else if (datetime(created)?.typ == 'd') {
+        if (datetime(created)?.val == 1) {
+          head_datetime = 'دیروز'
+        } else if ((datetime(created)?.val < 7)) {
+          const _time_split = head.fatime.split(':')
+          const day_name = head.fadatetime.split('،')[0]
+          head_datetime = day_name + '، ' + `${_time_split[0]}:${_time_split[1]}`
+        }
+      } else if (datetime(created)?.typ == 'm') {
+        if (datetime(created)?.val < 12) {
+          const _date_split = (head.fadatetime.split('، ')[1]).split(' ')
+          head_datetime = `${_date_split[1]} ${_date_split[2]}`
+        }
+      } else {
+        head_datetime = head.fadate
+      }
+
       results.push(
         {
           name: thread_name,
@@ -228,7 +258,7 @@ router.get("/", auth, async (req, res) => {
           uid: thr.uid,
           fatime: head.fatime,
           fadate: head.fadate,
-          fadatetime: head.fadatetime,
+          fadatetime: head_datetime,
           status: status,
           contact: undefined,
         }
