@@ -76,6 +76,7 @@ const datetime_details = (modified) => {
       }
       break
     case 5:
+    default:
       diff = {
         'typ': 's',
         'val': data[5],
