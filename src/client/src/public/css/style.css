@@ -450,6 +450,10 @@ button:hover {
   justify-content: space-evenly;
 }
 
+#sidebar-panel #thread-datetime {
+  font-size: 0.83em;
+}
+
 #sidebar-panel .message-tile #message {
   white-space: nowrap;
   overflow: hidden;

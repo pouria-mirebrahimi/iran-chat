@@ -143,7 +143,7 @@ const Sidebar = () => {
                 <div className='col'>
                   <div className="row">
                     <div><h4>{item.name}</h4></div>
-                    <div>{item.fadatetime}</div>
+                    <div id='thread-datetime'>{item.fadatetime}</div>
                   </div>
                   <div className="row">
                     <div id="message">{item.message}</div>
