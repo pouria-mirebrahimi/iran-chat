@@ -6,6 +6,7 @@ import Cookies from 'js-cookie'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import { Helmet } from 'react-helmet'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { numberToWords } from '@persian-tools/persian-tools'
 
@@ -169,8 +170,8 @@ const MSGContainer = () => {
           if (response.status === 200) {
             setmessages(response.data)
 
-            let message_div = document.getElementById("messages-insider");
-            message_div.scrollTop = message_div.scrollHeight;
+            // let message_div = document.getElementById("messages-insider");
+            // message_div.scrollTop = message_div.scrollHeight;
           }
         })
         .catch(error => {
@@ -331,6 +332,14 @@ const MSGContainer = () => {
     }
   }
 
+  const fetchData = () => {
+    console.log('loading')
+  }
+
+  const refreshScreen = () => {
+    console.log('refresh screen')
+  }
+
 
   if (loading)
     return (
@@ -354,54 +363,62 @@ const MSGContainer = () => {
           <title>ایران‌چت | {name}</title>
         </Helmet>
         <div id="messages-insider">
-          {
-            messages.map((item, index) => {
-              return <div key={index} className={`message-box ${item.sender && 'sender'}`}
-                ref={msgBlockRefs[item['id']]} >
-                <div className='col'>
-                  <div className="row">
-                    <p>{item.message}</p>
-                    {
-                      item['hasAttachments'] && <div id='attachments' onClick={() => download_attachments(item['uid'])}>
-                        <IconContext.Provider value={{ className: "download-icon" }}>
-                          <HiOutlineDocumentDownload />
-                        </IconContext.Provider>
-                      </div>
-                    }
-                  </div>
-                  <div className='row'>
-                    <div className='datetime'>
-                      <div>{item.datetime}</div>
-                      <div>{item.time}</div>
+          <InfiniteScroll
+            dataLength={messages.length}
+            next={fetchData}
+            // inverse={true}
+            hasMore={true}
+            onScroll={refreshScreen}
+          >
+            {
+              messages.map((item, index) => {
+                return <div key={index} className={`message-box ${item.sender && 'sender'}`}
+                  ref={msgBlockRefs[item['id']]} >
+                  <div className='col'>
+                    <div className="row">
+                      <p>{item.message}</p>
+                      {
+                        item['hasAttachments'] && <div id='attachments' onClick={() => download_attachments(item['uid'])}>
+                          <IconContext.Provider value={{ className: "download-icon" }}>
+                            <HiOutlineDocumentDownload />
+                          </IconContext.Provider>
+                        </div>
+                      }
                     </div>
-                    {
-                      (item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
-                        {
-                          <RiCheckboxBlankCircleFill />
-                        }
-                      </IconContext.Provider>
-                    }
+                    <div className='row'>
+                      <div className='datetime'>
+                        <div>{item.datetime}</div>
+                        <div>{item.time}</div>
+                      </div>
+                      {
+                        (item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                          {
+                            <RiCheckboxBlankCircleFill />
+                          }
+                        </IconContext.Provider>
+                      }
 
-                    {
-                      (item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
-                        {
-                          <BsCheck />
-                        }
-                      </IconContext.Provider>
-                    }
+                      {
+                        (item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                          {
+                            <BsCheck />
+                          }
+                        </IconContext.Provider>
+                      }
 
-                    {
-                      (item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
-                        {
-                          <BsCheckAll />
-                        }
-                      </IconContext.Provider>
-                    }
+                      {
+                        (item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                          {
+                            <BsCheckAll />
+                          }
+                        </IconContext.Provider>
+                      }
+                    </div>
                   </div>
                 </div>
-              </div>
-            })
-          }
+              })
+            }
+          </InfiniteScroll>
         </div>
         <div id="send-message">
           <MyDropzone />
