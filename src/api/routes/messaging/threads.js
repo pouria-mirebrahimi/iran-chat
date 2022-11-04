@@ -274,6 +274,9 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/thread/:id", auth, async (req, res) => {
   try {
+    const { page } = req.query
+    const limit = 20
+
     const thread_uid = req.params.id
     let results = []
 
@@ -298,8 +301,10 @@ router.get("/thread/:id", auth, async (req, res) => {
       }
     )
       .sort({
-        created: 1,
+        created: -1,
       })
+      .skip(limit * page)
+      .limit(limit)
       .populate(
         {
           path: 'owner',
@@ -312,6 +317,8 @@ router.get("/thread/:id", auth, async (req, res) => {
           model: 'User'
         }
       )
+
+    messages.reverse()
 
     // let thread_name = thread.owner.alias
     // if (thr.name === 'welcome message') {
