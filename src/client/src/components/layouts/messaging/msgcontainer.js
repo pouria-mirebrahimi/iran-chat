@@ -79,6 +79,8 @@ const MSGContainer = () => {
 
   const [lastMessageID, setlastMessageID] = useState(null)
 
+  const [skip, setSkip] = useState(0)
+
   const [customHeight, setCustomHeight] = useState('56px')
 
   useEffect(() => {
@@ -170,8 +172,8 @@ const MSGContainer = () => {
           if (response.status === 200) {
             setmessages(response.data)
 
-            // let message_div = document.getElementById("messages-insider");
-            // message_div.scrollTop = message_div.scrollHeight;
+            let message_div = document.getElementById("messages-insider")
+            message_div.scrollTop = message_div.scrollHeight
           }
         })
         .catch(error => {
@@ -333,13 +335,9 @@ const MSGContainer = () => {
   }
 
   const fetchData = () => {
-    console.log('loading')
+    setSkip(skip + 1)
+    console.log('loading ' + skip)
   }
-
-  const refreshScreen = () => {
-    console.log('refresh screen')
-  }
-
 
   if (loading)
     return (
@@ -366,9 +364,9 @@ const MSGContainer = () => {
           <InfiniteScroll
             dataLength={messages.length}
             next={fetchData}
-            // inverse={true}
+            inverse={true}
             hasMore={true}
-            onScroll={refreshScreen}
+            scrollableTarget="messages-insider"
           >
             {
               messages.map((item, index) => {

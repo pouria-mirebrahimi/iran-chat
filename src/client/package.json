@@ -2,6 +2,9 @@
   "name": "nikachat",
   "version": "0.1.0",
   "private": true,
+  "blacklist": [
+    "useStrict"
+  ],
   "dependencies": {
     "@persian-tools/persian-tools": "^3.2.1",
     "axios": "^0.26.1",
