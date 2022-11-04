@@ -313,6 +313,23 @@ router.get("/thread/:id", auth, async (req, res) => {
         }
       )
 
+    // let thread_name = thread.owner.alias
+    // if (thr.name === 'welcome message') {
+    //   thread_name = 'پیام‌های ذخیره‌شده'
+    // } else if (thr.name !== undefined) {
+    //   thread_name = thr.name
+    // }
+    // else if (head.owner.uniqueId == req.user.uniqueId) {
+    //   const a_user = await UserModel.findOne(
+    //     {
+    //       uniqueId: { $ne: req.user.uniqueId },
+    //       'threads.thread': { $in: thr }
+    //     }
+    //   )
+    //   thread_name = a_user?.alias
+    //   target_unqiueId = a_user?.uniqueId
+    // }
+
     for (let item of messages) {
       let message = await MessageModel.findOneAndUpdate(
         {
@@ -371,6 +388,7 @@ router.get("/thread/:id", auth, async (req, res) => {
 
       results.push(
         {
+          name: thread_name,
           message: message['message'],
           hasAttachments: message['attachments'].length > 0,
           date: message['fadate'],
