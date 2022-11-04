@@ -5,6 +5,7 @@ import ScaleLoader from 'react-spinners/ScaleLoader'
 import Cookies from 'js-cookie'
 import PropTypes from 'prop-types'
 import axios from 'axios'
+import { Helmet } from 'react-helmet'
 
 import { numberToWords } from '@persian-tools/persian-tools'
 
@@ -68,6 +69,8 @@ const MSGContainer = () => {
     setMessageID,
     setContact,
     newReload,
+    name,
+    setThreadName,
   } = messagingContext
 
   const [loading, setloading] = useState(true)
@@ -78,6 +81,10 @@ const MSGContainer = () => {
   const [customHeight, setCustomHeight] = useState('56px')
 
   useEffect(() => {
+    // setTimeout(() => {
+    //   console.log(name)
+    //   document.title = name
+    // }, 100)
     if (message_id != undefined && message_id != '') {
       setTimeout(() => {
         fetchMessages(message_id)
@@ -343,6 +350,9 @@ const MSGContainer = () => {
   else
     return (
       <div className="msg-container">
+        <Helmet defer={false}>
+          <title>ایران‌چت | {name}</title>
+        </Helmet>
         <div id="messages-insider">
           {
             messages.map((item, index) => {

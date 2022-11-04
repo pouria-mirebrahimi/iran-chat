@@ -40,6 +40,8 @@ const Sidebar = () => {
     setMessageID,
     setContact,
     newReload,
+    name,
+    setThreadName,
   } = messagingContext
 
   useEffect(() => {
@@ -103,10 +105,11 @@ const Sidebar = () => {
     }
   }
 
-  const gotoMessage = (uid, cid) => {
+  const gotoMessage = (uid, cid, name) => {
     searchRef.current.value = ''
     setContact(cid)
     setMessageID(uid)
+    setThreadName(name)
     newReload()
   }
 
@@ -136,7 +139,7 @@ const Sidebar = () => {
           {
             threads.map((item, index) => {
               return <div className={`message-tile ${(item.uid == message_id) && 'active-tile'}`}
-                key={index} onClick={(uid, cid) => gotoMessage(item.uid, item.contact)}>
+                key={index} onClick={(uid, cid, name) => gotoMessage(item.uid, item.contact, item.name)}>
                 <div id="avatar">
                   <h4>{item.name.slice(0, 1)}</h4>
                 </div>
