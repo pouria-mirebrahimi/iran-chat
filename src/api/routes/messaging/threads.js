@@ -101,37 +101,37 @@ router.get("/", auth, async (req, res) => {
     } else { }
 
     const user_threads = await UserModel.findById(req.user._id)
-      .populate(
-        {
-          path: 'threads.thread',
-          model: 'Thread',
-          select: ['head', 'name', 'uid'],
-          populate: {
-            path: 'head',
-            model: 'Message',
-            select: [
-              'owner',
-              'message',
-              'uid',
-              'seen',
-              'fatime',
-              'fadate',
-              'fadatetime'
-            ],
-            populate: [
-              {
-                path: 'owner',
-                model: 'User',
-                select: ['alias', 'uniqueId']
-              }, {
-                path: 'seen.user',
-                model: 'User',
-                select: ['alias', 'uniqueId']
-              }
-            ]
-          }
-        }
-      )
+    // .populate(
+    //   {
+    //     path: 'threads.thread',
+    //     model: 'Thread',
+    //     select: ['head', 'name', 'uid'],
+    //     populate: {
+    //       path: 'head',
+    //       model: 'Message',
+    //       select: [
+    //         'owner',
+    //         'message',
+    //         'uid',
+    //         'seen',
+    //         'fatime',
+    //         'fadate',
+    //         'fadatetime'
+    //       ],
+    //       populate: [
+    //         {
+    //           path: 'owner',
+    //           model: 'User',
+    //           select: ['alias', 'uniqueId']
+    //         }, {
+    //           path: 'seen.user',
+    //           model: 'User',
+    //           select: ['alias', 'uniqueId']
+    //         }
+    //       ]
+    //     }
+    //   }
+    // )
 
     let threads_id = []
     for (const item of user_threads.threads) {
@@ -225,30 +225,30 @@ router.get("/", auth, async (req, res) => {
         }
       }
 
-      const created = head.created.toLocaleString(
+      const modified = thr.modified.toLocaleString(
         'fa-IR', { timeZone: 'Asia/Tehran', hour12: false }
       )
 
-      let head_datetime = head.fadatetime
-      if (datetime(created)?.typ == 'h' ||
-        datetime(created)?.typ == 'm' ||
-        datetime(created)?.typ == 's') {
-        head_datetime = head.fatime
-      } else if (datetime(created)?.typ == 'd') {
-        if (datetime(created)?.val == 1) {
-          head_datetime = 'دیروز'
-        } else if ((datetime(created)?.val < 7)) {
-          const _time_split = head.fatime.split(':')
-          const day_name = head.fadatetime.split('،')[0]
-          head_datetime = day_name + '، ' + `${_time_split[0]}:${_time_split[1]}`
+      let thr_datetime = thr.fadatetime
+      if (datetime(modified)?.typ == 'h' ||
+        datetime(modified)?.typ == 'm' ||
+        datetime(modified)?.typ == 's') {
+        thr_datetime = thr.fatime
+      } else if (datetime(modified)?.typ == 'd') {
+        if (datetime(modified)?.val == 1) {
+          thr_datetime = 'دیروز'
+        } else if ((datetime(modified)?.val < 7)) {
+          const _time_split = thr.fatime.split(':')
+          const day_name = thr.fadatetime.split('،')[0]
+          thr_datetime = day_name + '، ' + `${_time_split[0]}:${_time_split[1]}`
         }
-      } else if (datetime(created)?.typ == 'm') {
-        if (datetime(created)?.val < 12) {
-          const _date_split = (head.fadatetime.split('، ')[1]).split(' ')
-          head_datetime = `${_date_split[1]} ${_date_split[2]}`
+      } else if (datetime(modified)?.typ == 'm') {
+        if (datetime(modified)?.val < 12) {
+          const _date_split = (thr.fadatetime.split('، ')[1]).split(' ')
+          thr_datetime = `${_date_split[1]} ${_date_split[2]}`
         }
       } else {
-        head_datetime = head.fadate
+        thr_datetime = thr.fadate
       }
 
       results.push(
@@ -258,7 +258,7 @@ router.get("/", auth, async (req, res) => {
           uid: thr.uid,
           fatime: head.fatime,
           fadate: head.fadate,
-          fadatetime: head_datetime,
+          fadatetime: thr_datetime,
           status: status,
           contact: undefined,
         }
