@@ -4,6 +4,7 @@ import ScaleLoader from 'react-spinners/ScaleLoader'
 
 import Sidebar from '../layouts/messaging/sidebar'
 import MSGContainer from '../layouts/messaging/msgcontainer'
+import MainMenu from '../layouts/messaging/mainmenu'
 
 import MessagingState from '../../context/messaging/state'
 
@@ -34,6 +35,10 @@ const Messages = (props) => {
           <Sidebar />
           <MSGContainer />
         </MessagingState>
+      }
+      {
+        width < 601 &&
+        <MainMenu />
       }
     </div>
   )

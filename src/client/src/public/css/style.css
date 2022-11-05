@@ -355,6 +355,12 @@ button:hover {
   margin-top: 2em;
 }
 
+#msg-header {
+  height: 50px;
+  background-color: white;
+  margin-bottom: 8px;
+}
+
 #sidebar-panel {
   display: flex;
   flex-direction: column;
@@ -680,6 +686,18 @@ button:hover {
   }
 }
 
+@media screen and (max-width: 601px) {
+  #sidebar-panel {
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+  }
+
+  /* .msg-container {
+    display: none;
+  } */
+}
+
 @media screen and (max-width: 900px) {
   .message-box {
     width: 65% !important;
@@ -693,6 +711,7 @@ button:hover {
 }
 
 @media screen and (max-width: 601px) {
+
   .layout {
     box-shadow: none;
     width: 480px;

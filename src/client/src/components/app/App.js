@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import SignIn from "../pages/signin"
 import Messages from "../pages/messages"
 import NewUser from "../pages/new"
+import MSGShow from '../layouts/messaging/msgshow';
 
 function App() {
   return (
@@ -43,12 +44,25 @@ function App() {
               {
                 [
                   "/your/messages",
-                  "/your/messages/:id"
                 ]
               } render={
                 () => (
                   <Fragment>
                     <Messages />
+                  </Fragment>
+                )
+              }
+            />
+
+            <Route exact path=
+              {
+                [
+                  "/your/messages/:id",
+                ]
+              } render={
+                () => (
+                  <Fragment>
+                    <MSGShow />
                   </Fragment>
                 )
               }
