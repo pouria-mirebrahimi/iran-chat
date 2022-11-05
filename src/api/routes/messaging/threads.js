@@ -915,4 +915,33 @@ router.get('/search/:query', auth, async (req, res) => {
   }
 })
 
+router.get('/attachments/:id', auth, async (req, res) => {
+  try {
+    var id = req.params.id
+
+    const message = await MessageModel.findOne({
+      uid: id,
+    })
+
+    if (!message) {
+      throw new Error('message not found')
+    }
+
+    var zp = new admz()
+    for (var k = 0; k < message['attachments'].length; k++) {
+      zp.addLocalFile(message['attachments'][k])
+    }
+
+    const file_after_download = 'downloaded_file.zip'
+    const data = zp.toBuffer()
+
+    res.set('Content-Type', 'application/octet-stream')
+    res.set('Content-Disposition', `attachment; filename=${file_after_download}`)
+    res.set('Content-Length', data.length)
+    res.send(data)
+  } catch (e) {
+    res.status(400).send(e.toString())
+  }
+})
+
 module.exports = router
