@@ -9,17 +9,32 @@ import MessagingState from '../../context/messaging/state'
 
 const Messages = (props) => {
 
+  const [width, setWidth] = useState(null)
+  const [height, setHeight] = useState(null)
+
   useEffect(() => {
+    const {
+      innerWidth: width,
+      innerHeight: height,
+    } = window
+
+    setWidth(width)
+    setHeight(height)
+
     return () => { }
   }, [])
 
 
   return (
+
     <div id="message-window">
-      <MessagingState>
-        <Sidebar />
-        <MSGContainer />
-      </MessagingState>
+      {
+        width > 600 &&
+        <MessagingState>
+          <Sidebar />
+          <MSGContainer />
+        </MessagingState>
+      }
     </div>
   )
 }
