@@ -35,6 +35,10 @@ import {
 } from 'react-icons/hi'
 
 import {
+  FiArrowRight
+} from 'react-icons/fi'
+
+import {
   FaAngleRight,
   FaRegTimesCircle
 } from 'react-icons/fa'
@@ -366,10 +370,11 @@ const MSGShow = () => {
         <Helmet defer={false}>
           <title>ایران‌چت | {threadName}</title>
         </Helmet>
-        <div id="msg-header">
-          <IconContext.Provider value={{ className: "download-icon" }}>
-            <HiOutlineDocumentDownload />
+        <div id="msg-header" onClick={() => { history.goBack() }}>
+          <IconContext.Provider value={{ className: "back-icon" }}>
+            <FiArrowRight />
           </IconContext.Provider>
+          <h4>{threadName}</h4>
         </div>
         <div id="messages-insider">
           <InfiniteScroll
