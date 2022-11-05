@@ -53,6 +53,14 @@ const Sidebar = () => {
     return () => { }
   }, [reload])
 
+  useEffect(() => {
+    setInterval(() => {
+      getThreads()
+    }, 1500)
+    return () => { }
+  }, [])
+
+
 
   const getThreads = () => {
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''

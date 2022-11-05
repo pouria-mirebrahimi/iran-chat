@@ -36,6 +36,10 @@ const MainMenu = () => {
       getThreads()
     }, 300)
 
+    setInterval(() => {
+      getThreads()
+    }, 1500)
+
     return () => { }
   }, [])
 
