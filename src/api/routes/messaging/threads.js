@@ -272,6 +272,136 @@ router.get("/", auth, async (req, res) => {
   }
 })
 
+router.get("/continues/:id", auth, async (req, res) => {
+  try {
+    const thread_uid = req.params.id
+    const message_uid = req.query.id
+
+    const this_message = await MessageModel.findOne(
+      {
+        uid: message_uid
+      }
+    )
+      .select(['created', 'thread'])
+      .populate(
+        {
+          path: 'thread',
+          model: 'Thread'
+        }
+      )
+
+    const thread = this_message['thread']
+    const a_user = await UserModel.findOne(
+      {
+        uniqueId: { $ne: req.user.uniqueId },
+        'threads.thread': { $in: thread }
+      }
+    )
+    const thread_name = a_user?.alias
+    const target_unqiueId = a_user?.uniqueId
+
+    const messages = await MessageModel.find(
+      {
+        thread: thread,
+        created: { $gt: this_message['created'] }
+      }
+    )
+      .sort({
+        created: -1,
+      })
+      .populate(
+        {
+          path: 'owner',
+          model: 'User',
+        }
+      )
+      .populate(
+        {
+          path: 'seen.user',
+          model: 'User'
+        }
+      )
+
+    messages.reverse()
+
+    let results = []
+    for (let item of messages) {
+      let message = await MessageModel.findOneAndUpdate(
+        {
+          uid: item.uid,
+          'seen.user': { $nin: req.user }
+        },
+        {
+          $push: {
+            seen: {
+              user: req.user
+            }
+          }
+        }, { new: true }
+      )
+        .populate(
+          {
+            path: 'seen.user',
+            model: 'User'
+          }
+        )
+        .populate(
+          {
+            path: 'owner',
+            model: 'User'
+          }
+        )
+
+      if (!message) {
+        message = item
+      }
+
+      let status = ''
+      if (thread.name == 'welcome message') {
+        if (message.seen.length > 0) {
+          status = 'SEEN'
+        } else {
+          status = 'RECV'
+        }
+      } else {
+        if (req.user.uniqueId === message.owner.uniqueId) {
+          status = 'SENT'
+          for (const item of message.seen) {
+            if (item.user.uniqueId === target_unqiueId) {
+              status = 'SEEN'
+            }
+          }
+        } else {
+          status = 'RECV'
+          for (const item of message.seen) {
+            if (item.user.uniqueId === req.user.uniqueId) {
+              status = ''
+            }
+          }
+        }
+      }
+
+      results.push(
+        {
+          name: thread_name,
+          message: message['message'],
+          hasAttachments: message['attachments'].length > 0,
+          date: message['fadate'],
+          time: message['fatime'],
+          datetime: message['fadatetime'],
+          uid: message['uid'],
+          sender: (req.user.uniqueId === message.owner.uniqueId) && !message.sent_by_server,
+          status: status,
+        }
+      )
+    }
+
+    res.status(200).send(results)
+  } catch (e) {
+    res.status(400).send(e.tostring())
+  }
+})
+
 router.get("/thread/:id", auth, async (req, res) => {
   try {
     const { page } = req.query
