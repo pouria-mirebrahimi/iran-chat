@@ -55,8 +55,10 @@ const Sidebar = () => {
 
   useEffect(() => {
     setInterval(() => {
-      getThreads()
-    }, 1500)
+      const query = searchRef.current?.value
+      if (query.length == 0)
+        getThreads()
+    }, 5000)
     return () => { }
   }, [])
 
@@ -74,9 +76,9 @@ const Sidebar = () => {
       })
         .then(response => {
           setThreads(response.data)
-          setTimeout(() => {
-            searchRef.current?.focus()
-          }, 500)
+          // setTimeout(() => {
+          //   searchRef.current?.focus()
+          // }, 500)
         })
         .catch(error => {
           setTimeout(() => {
