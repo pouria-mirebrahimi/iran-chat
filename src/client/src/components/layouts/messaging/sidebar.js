@@ -53,6 +53,16 @@ const Sidebar = () => {
     return () => { }
   }, [reload])
 
+  useEffect(() => {
+    setInterval(() => {
+      const query = searchRef.current?.value
+      if (query.length == 0)
+        getThreads()
+    }, 5000)
+    return () => { }
+  }, [])
+
+
 
   const getThreads = () => {
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
@@ -66,9 +76,9 @@ const Sidebar = () => {
       })
         .then(response => {
           setThreads(response.data)
-          setTimeout(() => {
-            searchRef.current?.focus()
-          }, 500)
+          // setTimeout(() => {
+          //   searchRef.current?.focus()
+          // }, 500)
         })
         .catch(error => {
           setTimeout(() => {
