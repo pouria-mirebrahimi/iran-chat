@@ -38,7 +38,7 @@ const MainMenu = () => {
 
     setInterval(() => {
       const query = searchRef.current?.value
-      if (query === undefined)
+      if (query === undefined || query === '')
         getThreads()
     }, 1500)
 
