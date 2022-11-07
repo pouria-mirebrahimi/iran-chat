@@ -98,6 +98,8 @@ const MainMenu = () => {
   }
 
   const gotoMessage = (uid, cid, name) => {
+
+    if (uid === '') uid = 'new-user'
     searchRef.current.value = ''
     history.push({
       pathname: generatePath("/your/messages/:uid", { uid }),
