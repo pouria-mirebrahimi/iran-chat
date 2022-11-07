@@ -45,6 +45,8 @@ import {
 
 import { IconContext } from 'react-icons/lib'
 
+let fetchingInterval
+
 const MSGShow = () => {
 
   const history = useHistory()
@@ -81,6 +83,8 @@ const MSGShow = () => {
   const [contact_id, setcontactID] = useState('')
   const [threadName, setThreadName] = useState('')
 
+  const [reload, setReload] = useState(0)
+
   useEffect(() => {
 
     const contact_id = location.state.contact_id
@@ -95,7 +99,7 @@ const MSGShow = () => {
     }
 
     return () => { }
-  }, [])
+  }, [reload])
 
   function MyDropzone() {
     const onDrop = useCallback((acceptedFiles) => {
@@ -160,17 +164,18 @@ const MSGShow = () => {
       })
         .then(response => {
           if (response.status === 200) {
+            let _msgs = []
             if (_scrollHeight) {
-              setmessages(response.data)
+              _msgs = response.data
+              setmessages(_msgs)
             } else {
               if (response.data.length > 0) {
                 setTimeout(() => {
-                  setmessages(
-                    [
-                      ...response.data,
-                      ...messages,
-                    ]
-                  )
+                  _msgs = [
+                    ...response.data,
+                    ...messages,
+                  ]
+                  setmessages(_msgs)
                   let message_div = document.getElementById("messages-insider")
                   message_div.scrollTo({ top: heigthTop - 200 })
                 }, 100)
@@ -184,11 +189,46 @@ const MSGShow = () => {
               let message_div = document.getElementById("messages-insider")
               message_div.scrollTop = message_div.scrollHeight
             }
+
+            if (fetchingInterval !== null) {
+              clearInterval(fetchingInterval)
+            }
+
+            fetchingInterval = setInterval(() => {
+              fetchPartialMessages(id, _msgs)
+            }, 1000)
           }
 
           setTimeout(() => {
             setloading(false)
           }, 1500)
+        })
+        .catch(error => {
+          setTimeout(() => {
+            history.replace('/')
+          }, 1000)
+        })
+    }
+  }
+
+  const fetchPartialMessages = (id, msgs) => {
+    const last_msg = msgs[msgs.length - 1]
+    const last_msg_uid = last_msg['uid']
+
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
+
+    if (auth_token != '') {
+      axios.get(`/api/threads/continues/${id}?id=${last_msg_uid}`, {
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if (response.data.length > 0) {
+            setReload(Math.random())
+          }
         })
         .catch(error => {
           setTimeout(() => {
