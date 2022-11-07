@@ -668,7 +668,6 @@ router.get("/contact/:id", auth, async (req, res) => {
 
     res.status(200).send(results)
   } catch (e) {
-    console.log(e)
     res.status(400).send(e.toString())
   }
 })

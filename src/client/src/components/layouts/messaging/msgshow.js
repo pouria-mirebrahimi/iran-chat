@@ -94,8 +94,14 @@ const MSGShow = () => {
     setcontactID(contact_id)
     setThreadName(thread_name)
 
-    if (threa_id) {
-      fetchMessages(threa_id, 0, true)
+    if (threa_id !== 'new-user') {
+      setTimeout(() => {
+        fetchMessages(threa_id, 0, true)
+      }, 1)
+    } else {
+      setTimeout(() => {
+        fetchMessagesByUserUID(contact_id)
+      }, 1)
     }
 
     return () => { }
@@ -254,9 +260,15 @@ const MSGShow = () => {
             setmessages(response.data)
 
             setTimeout(() => {
-              let message_div = document.getElementById("messages-insider")
-              message_div.scrollTop = message_div.scrollHeight
-            }, 50)
+              setloading(false)
+            }, 1000)
+
+            // setReload(Math.random())
+
+            // setTimeout(() => {
+            //   let message_div = document.getElementById("messages-insider")
+            //   message_div.scrollTop = message_div.scrollHeight
+            // }, 50)
           }
         })
         .catch(error => {
@@ -306,7 +318,7 @@ const MSGShow = () => {
     const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
     if (auth_token != '') {
       let url = ''
-      if (message_id != undefined && message_id != '') {
+      if (message_id != undefined && message_id != 'new-user') {
         url = `/api/threads/thread/message/reply/${message_id}`
       } else if (contact_id != undefined && contact_id != '') {
         url = `/api/threads/thread/contact/reply/${contact_id}`
@@ -322,6 +334,10 @@ const MSGShow = () => {
       )
         .then(response => {
           setMessageID(response.data.uid)
+
+          setTimeout(() => {
+            fetchMessages(response.data.uid, 0, true)
+          }, 100)
 
           setTimeout(() => {
             setLockUI(false)
