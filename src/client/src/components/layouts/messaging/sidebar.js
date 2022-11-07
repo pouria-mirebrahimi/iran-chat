@@ -56,8 +56,9 @@ const Sidebar = () => {
   useEffect(() => {
     setInterval(() => {
       const query = searchRef.current?.value
-      if (query === undefined)
+      if (query === undefined || query === '') {
         getThreads()
+      }
     }, 5000)
     return () => { }
   }, [])
