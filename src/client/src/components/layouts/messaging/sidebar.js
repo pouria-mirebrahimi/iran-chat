@@ -58,6 +58,7 @@ const Sidebar = () => {
       const query = searchRef.current?.value
       if (query === undefined || query === '') {
         getThreads()
+
       }
     }, 5000)
     return () => { }

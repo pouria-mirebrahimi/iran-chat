@@ -85,6 +85,8 @@ const MSGContainer = () => {
 
   const [customHeight, setCustomHeight] = useState('56px')
 
+  const [fetchingInterval, setFetchingInterval] = useState(null)
+
   useEffect(() => {
 
     setSkip(0) // reset messaging page
@@ -106,6 +108,7 @@ const MSGContainer = () => {
 
     return () => { }
   }, [reload])
+
 
   function MyDropzone() {
     const onDrop = useCallback((acceptedFiles) => {
@@ -162,7 +165,8 @@ const MSGContainer = () => {
     const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
 
     if (auth_token != '') {
-      axios.get(`/api/threads/thread/${id}?page=${skip}`, {
+      const url = `/api/threads/thread/${id}?page=${skip}`
+      axios.get(url, {
         headers: {
           Authorization: `Bearer ${auth_token}`,
           'Content-Type': 'application/json'
@@ -170,17 +174,18 @@ const MSGContainer = () => {
       })
         .then(response => {
           if (response.status === 200) {
+            let _msgs = []
             if (_scrollHeight) {
-              setmessages(response.data)
+              _msgs = response.data
+              setmessages(_msgs)
             } else {
               if (response.data.length > 0) {
                 setTimeout(() => {
-                  setmessages(
-                    [
-                      ...response.data,
-                      ...messages,
-                    ]
-                  )
+                  _msgs = [
+                    ...response.data,
+                    ...messages,
+                  ]
+                  setmessages(_msgs)
                   let message_div = document.getElementById("messages-insider")
                   message_div.scrollTo({ top: heigthTop - 200 })
                 }, 100)
@@ -194,6 +199,43 @@ const MSGContainer = () => {
               let message_div = document.getElementById("messages-insider")
               message_div.scrollTop = message_div.scrollHeight
             }
+
+            if (fetchingInterval !== null) {
+              clearInterval(fetchingInterval)
+            }
+
+            setFetchingInterval(
+              setInterval(() => {
+                fetchPartialMessages(id, _msgs)
+              }, 1000)
+            )
+          }
+        })
+        .catch(error => {
+          setTimeout(() => {
+            history.replace('/')
+          }, 1000)
+        })
+    }
+  }
+
+  const fetchPartialMessages = (id, msgs) => {
+    const last_msg = msgs[msgs.length - 1]
+    const last_msg_uid = last_msg['uid']
+
+    const auth_token = Cookies.get('auth_token', { path: '' }) ?? ''
+    const unique_id = Cookies.get('unique_id', { path: '' }) ?? ''
+
+    if (auth_token != '') {
+      axios.get(`/api/threads/continues/${id}?id=${last_msg_uid}`, {
+        headers: {
+          Authorization: `Bearer ${auth_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          if (response.data.length > 0) {
+            newReload()
           }
         })
         .catch(error => {
