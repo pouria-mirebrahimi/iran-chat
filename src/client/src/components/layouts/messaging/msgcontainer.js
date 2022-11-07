@@ -43,6 +43,8 @@ import { IconContext } from 'react-icons/lib'
 
 import MessagingContext from '../../../context/messaging/context'
 
+let fetchingInterval
+
 const MSGContainer = () => {
 
   const history = useHistory()
@@ -85,7 +87,7 @@ const MSGContainer = () => {
 
   const [customHeight, setCustomHeight] = useState('56px')
 
-  const [fetchingInterval, setFetchingInterval] = useState(null)
+  // const [fetchingInterval, setFetchingInterval] = useState(null)
 
   useEffect(() => {
 
@@ -106,7 +108,13 @@ const MSGContainer = () => {
       }, 1000)
     }
 
-    return () => { }
+    return () => {
+      // on exit
+      if (fetchingInterval !== null) {
+        clearInterval(fetchingInterval)
+        // setFetchingInterval(null)
+      }
+    }
   }, [reload])
 
 
@@ -202,13 +210,18 @@ const MSGContainer = () => {
 
             if (fetchingInterval !== null) {
               clearInterval(fetchingInterval)
+              // setFetchingInterval(null)
             }
 
-            setFetchingInterval(
-              setInterval(() => {
-                fetchPartialMessages(id, _msgs)
-              }, 1000)
-            )
+            fetchingInterval = setInterval(() => {
+              fetchPartialMessages(id, _msgs)
+            }, 1000)
+
+            // setFetchingInterval(
+            //   setInterval(() => {
+            //     fetchPartialMessages(id, _msgs)
+            //   }, 1000)
+            // )
           }
         })
         .catch(error => {

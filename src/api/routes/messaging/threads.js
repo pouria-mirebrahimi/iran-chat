@@ -332,11 +332,11 @@ router.get("/continues/:id", auth, async (req, res) => {
           'seen.user': { $nin: req.user }
         },
         {
-          $push: {
-            seen: {
-              user: req.user
-            }
-          }
+          // $push: {
+          //   seen: {
+          //     user: req.user
+          //   }
+          // }
         }, { new: true }
       )
         .populate(
