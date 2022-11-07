@@ -134,49 +134,51 @@ const MainMenu = () => {
                 placeholder='عبارت مستعار، شناسه، کاربر، گروه' />
             </div>
           </div>
-          {
-            threads.map((item, index) => {
-              return <div className='message-tile'
-                key={index} onClick={(uid, cid, name) => gotoMessage(item.uid, item.contact, item.name)}>
-                <div id="avatar">
-                  <h4>{item.name.slice(0, 1)}</h4>
-                </div>
-                <div className='col'>
-                  <div className="row">
-                    <div><h4>{item.name}</h4></div>
-                    <div id='thread-datetime'>{item.fadatetime}</div>
+          <div className="message-container">
+            {
+              threads.map((item, index) => {
+                return <div className='message-tile'
+                  key={index} onClick={(uid, cid, name) => gotoMessage(item.uid, item.contact, item.name)}>
+                  <div id="avatar">
+                    <h4>{item.name.slice(0, 1)}</h4>
                   </div>
-                  <div className="row">
-                    <div id="message">{item.message}</div>
-                    {
-                      (item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
-                        {
-                          <RiCheckboxBlankCircleFill />
-                        }
-                      </IconContext.Provider>
-                    }
+                  <div className='col'>
+                    <div className="row">
+                      <div><h4>{item.name}</h4></div>
+                      <div id='thread-datetime'>{item.fadatetime}</div>
+                    </div>
+                    <div className="row">
+                      <div id="message">{item.message}</div>
+                      {
+                        (item['status'] == 'RECV') && <IconContext.Provider value={{ size: 8, className: "status-icon" }}>
+                          {
+                            <RiCheckboxBlankCircleFill />
+                          }
+                        </IconContext.Provider>
+                      }
 
-                    {
-                      (item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
-                        {
-                          <BsCheck />
-                        }
-                      </IconContext.Provider>
-                    }
+                      {
+                        (item['status'] == 'SENT') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                          {
+                            <BsCheck />
+                          }
+                        </IconContext.Provider>
+                      }
 
-                    {
-                      (item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
-                        {
-                          <BsCheckAll />
-                        }
-                      </IconContext.Provider>
-                    }
+                      {
+                        (item['status'] == 'SEEN') && <IconContext.Provider value={{ size: 18, className: "status-icon" }}>
+                          {
+                            <BsCheckAll />
+                          }
+                        </IconContext.Provider>
+                      }
 
+                    </div>
                   </div>
                 </div>
-              </div>
-            })
-          }
+              })
+            }
+          </div>
         </div>
       }
     </Fragment>

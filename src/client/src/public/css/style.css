@@ -35,8 +35,8 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: transparent;
-  border-radius: 20px;
+  background-color: white;
+  border-radius: 0px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -379,6 +379,7 @@ button:hover {
 }
 
 #sidebar-panel {
+  direction: rtl;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -391,7 +392,14 @@ button:hover {
   background-color: var(--primary-color-2);
 }
 
+#sidebar-panel .message-container {
+  width: 100%;
+  overflow-y: scroll;
+  direction: ltr;
+}
+
 #sidebar-panel .message-tile {
+  direction: rtl;
   padding: 10px 12px 10px 12px;
   width: 100%;
   display: flex;
@@ -708,6 +716,11 @@ button:hover {
     min-width: unset;
     max-width: unset;
     width: 100%;
+  }
+
+  .message-container {
+    width: 100%;
+    overflow: auto;
   }
 
   /* .msg-container {
