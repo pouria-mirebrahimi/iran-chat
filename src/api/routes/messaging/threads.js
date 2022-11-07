@@ -815,6 +815,8 @@ router.post("/thread/contact/reply/:id", auth, upload.any(), async (req, res) =>
       }
     )
 
+    await thread.save()
+
     await UserModel.findOneAndUpdate(
       {
         _id: req.user._id,
