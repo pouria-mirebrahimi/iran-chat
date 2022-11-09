@@ -1,6 +1,6 @@
 {
-  "name": "Iranchat",
-  "version": "1.0.3",
+  "name": "iranchat",
+  "version": "1.0.2",
   "description": "An open-source messaging web application",
   "main": "server.js",
   "scripts": {
